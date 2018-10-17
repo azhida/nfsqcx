@@ -38,10 +38,9 @@ Route::group(['prefix' => 'index', 'namespace' => 'Index'], function()
 });
 
 // 管理后台
-Route::group(['prefix' => 'admin'], function()
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
 {
-    Route::get('users', function(){
-        return 'Matches The "/admin/users" URL';
-    });
+    Route::get('login', 'LoginController@login');
+    Route::post('login', 'LoginController@login');
 });
 
