@@ -38,11 +38,11 @@ class LoginController extends Controller
                 return $this->showJson('9999', '该账号被禁用');
             }
 
-            session('user_name', $user_info->user_name);
-            session('head', $user_info->head);
-            session('role', $user_info->role_name);  // 角色名
-            session('role_id', $user_info->role_id);
-            session('rule', $user_info->rule);
+            session(['user_name' => $user_info->user_name]);
+            session(['head' => $user_info->head]);
+            session(['role' => $user_info->role_name]);  // 角色名
+            session(['role_id' => $user_info->role_id]);
+            session(['rule' => $user_info->rule]);
 
             // 更新管理员状态
             $param = [
