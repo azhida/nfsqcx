@@ -27,7 +27,12 @@ class LoginController extends Controller
                 return $this->showJson('9999', $validator->errors()->first());
             }
 
-            $user_info = DB::table('user as u')->join('role as r', 'r.id', '=', 'u.role_id')->where('u.user_name', $request->user_name)->first();
+            $user_info = DB::table('cx_user as u')
+                ->join('cx_role as r', 'r.id', '=', 'u.role_id')
+                ->select('u.id as admin_id', 'u.*', 'r.*')
+                ->where('u.user_name', $request->user_name)
+                ->first();
+
             if(empty($user_info)) return $this->showJson('9999', '管理员不存在');
 
             if(md5($request->password . env('SALT')) != $user_info->password){
@@ -38,6 +43,7 @@ class LoginController extends Controller
                 return $this->showJson('9999', '该账号被禁用');
             }
 
+            session(['admin_id' => $user_info->admin_id]);
             session(['user_name' => $user_info->user_name]);
             session(['head' => $user_info->head]);
             session(['role' => $user_info->role_name]);  // 角色名
@@ -51,7 +57,7 @@ class LoginController extends Controller
                 'last_login_time' => time()
             ];
 
-            $res = DB::table('user')->where('id', $user_info->id)->update($param);
+            $res = DB::table('cx_user')->where('id', $user_info->admin_id)->update($param);
             if(1 != $res){
                 return $this->showJson('9999', '登录失败');
             }

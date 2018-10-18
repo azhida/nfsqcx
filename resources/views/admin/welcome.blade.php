@@ -120,13 +120,13 @@
                             <td>待定</td></tr>
                         <tr>
                             <th>laravel</th>
-                            <td>5.0.18</td></tr>
+                            <td>5.5.*</td></tr>
                         <tr>
                             <th>上传附件限制</th>
-                            <td>2M</td></tr>
+                            <td>{{ ini_get('upload_max_filesize') }}</td></tr>
                         <tr>
                             <th>执行时间限制</th>
-                            <td>30s</td></tr>
+                            <td>{{ ini_get('max_execution_time') }}s</td></tr>
                         <tr>
                             <th>剩余空间</th>
                             <td>86015.2M</td></tr>
@@ -141,12 +141,12 @@
                     <tbody>
                         <tr>
                             <th>版权所有</th>
-                            <td>xxxxx(xxxx)
-                                <a href="http://www.xxx.com/" class='x-a' target="_blank">访问官网</a></td>
+                            <td>深圳市坡马代科技有限公司
+                                <a href="http://www.weilh.vip/" class='x-a' target="_blank">访问官网</a></td>
                         </tr>
                         <tr>
                             <th>开发者</th>
-                            <td>马志斌(113664000@qq.com)</td></tr>
+                            <td>韦广合(334064034@qq.com)</td></tr>
                     </tbody>
                 </table>
             </div>
