@@ -27,42 +27,42 @@
                                             <a href="javascript:;" class="x-admin-backlog-body">
                                                 <h3>管理员数量</h3>
                                                 <p>
-                                                    <cite>66</cite></p>
+                                                    <cite>{{ $data['admin_count'] ?? 0 }}</cite></p>
                                             </a>
                                         </li>
                                         <li class="layui-col-xs2">
                                             <a href="javascript:;" class="x-admin-backlog-body">
                                                 <h3>促销员数量</h3>
                                                 <p>
-                                                    <cite>12</cite></p>
+                                                    <cite>{{ $data['saler_count'] }}</cite></p>
                                             </a>
                                         </li>
                                         <li class="layui-col-xs2">
                                             <a href="javascript:;" class="x-admin-backlog-body">
                                                 <h3>办事处数量</h3>
                                                 <p>
-                                                    <cite>99</cite></p>
+                                                    <cite>{{ $data['office_count'] ?? 0 }}</cite></p>
                                             </a>
                                         </li>
                                         <li class="layui-col-xs2">
                                             <a href="javascript:;" class="x-admin-backlog-body">
                                                 <h3>经销商数量</h3>
                                                 <p>
-                                                    <cite>67</cite></p>
+                                                    <cite>{{ $data['dealers_count'] ?? 0 }}</cite></p>
                                             </a>
                                         </li>
                                         <li class="layui-col-xs2">
                                             <a href="javascript:;" class="x-admin-backlog-body">
                                                 <h3>产品数量</h3>
                                                 <p>
-                                                    <cite>67</cite></p>
+                                                    <cite>{{ $data['product_count'] ?? 0 }}</cite></p>
                                             </a>
                                         </li>
                                         <li class="layui-col-xs2">
                                             <a href="javascript:;" class="x-admin-backlog-body">
                                                 <h3>渠道数量</h3>
                                                 <p>
-                                                    <cite>6766</cite></p>
+                                                    <cite>{{ $data['sales_count'] ?? 0 }}</cite></p>
                                             </a>
                                         </li>
                                     </ul>
