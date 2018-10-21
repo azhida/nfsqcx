@@ -49,6 +49,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::get('welcome', 'IndexController@welcome');
 
         Route::get('adminList', 'AdminController@adminList');
+        Route::get('adminAdd', 'AdminController@adminAdd');
+        Route::post('adminAdd', 'AdminController@adminAdd');
+        Route::get('adminEdit/{id?}', 'AdminController@adminEdit');
+        Route::post('adminEdit', 'AdminController@adminEdit');
+        Route::post('adminDelete', 'AdminController@adminDelete');
 
         Route::post('openAdmin', 'AdminController@openAdmin');
     });
