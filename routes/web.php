@@ -47,6 +47,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
     Route::group(['middleware' => ['admin_login']], function () {
         Route::get('index', 'IndexController@index');
         Route::get('welcome', 'IndexController@welcome');
+
+        Route::get('adminList', 'AdminController@adminList');
+
+        Route::post('openAdmin', 'AdminController@openAdmin');
     });
 
 
