@@ -45,6 +45,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
 
     // 需要登录
     Route::group(['middleware' => ['admin_login']], function () {
+
+        Route::get('logout', 'LoginController@logout');
+
         Route::get('index', 'IndexController@index');
         Route::get('welcome', 'IndexController@welcome');
 

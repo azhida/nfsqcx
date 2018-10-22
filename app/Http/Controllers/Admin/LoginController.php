@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -64,6 +65,12 @@ class LoginController extends Controller
 
             return $this->showJson('0000', '登陆成功');
         }
+    }
+
+    public function logout()
+    {
+        Session::flush();
+        return redirect('admin/login');
     }
 
 }
