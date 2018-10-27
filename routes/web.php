@@ -70,6 +70,18 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::get('roleEdit/{id}', 'RoleController@roleEdit');
         Route::post('roleEdit', 'RoleController@roleEdit');
         Route::post('roleDetele', 'RoleController@roleDetele');
+
+        // 权限管理
+        Route::get('ruleList', 'RuleController@ruleList');
+        Route::get('ruleAdd', 'RuleController@ruleAdd');
+        Route::post('ruleAdd', 'RuleController@ruleAdd');
+        Route::get('ruleEdit/{id}', 'RuleController@ruleEdit');
+        Route::post('ruleEdit', 'RuleController@ruleEdit');
+        Route::post('ruleDelete', 'RuleController@ruleDelete');
+        // 权限排序（菜单排序）
+        Route::post('changeSort', 'RuleController@changeSort');
+
+
     });
 
 
