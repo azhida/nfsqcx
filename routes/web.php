@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::get('index', 'IndexController@index');
         Route::get('welcome', 'IndexController@welcome');
 
+        // 管理员管理
         Route::get('adminList', 'AdminController@adminList');
         Route::get('adminAdd', 'AdminController@adminAdd');
         Route::post('adminAdd', 'AdminController@adminAdd');
@@ -58,7 +59,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('adminEdit', 'AdminController@adminEdit');
         Route::post('adminDelete', 'AdminController@adminDelete');
 
+        Route::get('adminAole', 'AdminController@adminAole');
+
         Route::post('openAdmin', 'AdminController@openAdmin');
+
+        // 角色管理
+        Route::get('roleList', 'RoleController@roleList');
+        Route::get('roleAdd', 'RoleController@roleAdd');
+        Route::post('roleAdd', 'RoleController@roleAdd');
+        Route::get('roleEdit/{id}', 'RoleController@roleEdit');
+        Route::post('roleEdit', 'RoleController@roleEdit');
+        Route::post('roleDetele', 'RoleController@roleDetele');
     });
 
 
