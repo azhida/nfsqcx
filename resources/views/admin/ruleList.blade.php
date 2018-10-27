@@ -42,7 +42,7 @@
   <xblock>
     <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
     <button class="layui-btn" onclick="x_admin_show('添加','{{ url('admin/ruleAdd') }}')"><i class="layui-icon"></i>添加</button>
-    <span class="x-right" style="line-height:40px">共有数据：{{ $list->total() }} 条</span>
+    <span class="x-right" style="line-height:40px"></span>
   </xblock>
   <table class="layui-table">
     <thead>
@@ -62,7 +62,7 @@
     </thead>
     <tbody>
     @foreach($list as $key => $value)
-      <tr class="parent">
+      <tr class="parent parent{{ $value->id }}">
         <td>
           <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{{ $value->id }}'><i class="layui-icon">&#xe605;</i></div>
         </td>
@@ -73,7 +73,7 @@
         <td>{{ $value->add_time }}</td>
         <td>{{ $value->update_time }}</td>
         <td><button class="layui-btn layui-btn-xs" show_status="0" onclick="showSonList(this, 'son{{ $value->id }}')">点击展开</button></td>
-        <td a="asd">
+        <td>
           @if($key > 0)
             <button class="layui-btn layui-btn-xs" onclick="changeSort('{{ $value->id }}', 'up')">上移</button>
           @endif
@@ -90,36 +90,38 @@
           </a>
         </td>
       </tr>
-      @foreach($value->son_list as $k => $v)
-        <tr class="son son{{ $value->id }} parent_{{ $key }}_son_{{ $k }}" style="display: none;">
-          <td>
-            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{{ $v->id }}'><i class="layui-icon">&#xe605;</i></div>
-          </td>
-          <td>{{ $v->id }}</td>
-          <td>|— {{ $v->rule_name }}</td>
-          <td>{{ $v->rule_desc }}</td>
-          <td>{{ $v->route_name }}</td>
-          <td>{{ $v->add_time }}</td>
-          <td>{{ $v->update_time }}</td>
-          <td>|—<button class="layui-btn layui-btn-xs">详情</button></td>
-          <td>
-            @if($k > 0)
-              |—<button class="layui-btn layui-btn-xs" onclick="changeSort('{{ $v->id }}', 'up', 'parent_{{ $key }}_son_', '{{ $k }}')">上移</button>
-            @endif
-            @if($k + 1 < count($value->son_list))
-              |—<button class="layui-btn layui-btn-xs" onclick="changeSort('{{ $v->id }}', 'down', 'parent_{{ $key }}_son_', '{{ $k }}')">下移</button>
-            @endif
-          </td>
-          <td class="td-manage">
-            <a title="编辑"  onclick="x_admin_show('编辑','{{ url('admin/ruleEdit') . '/' . $v->id }}')" href="javascript:;">
-              <i class="layui-icon">&#xe642;</i>
-            </a>
-            <a title="删除" onclick="member_del(this, '{{ $v->id }}')" href="javascript:;">
-              <i class="layui-icon">&#xe640;</i>
-            </a>
-          </td>
-        </tr>
+      @if(isset($value->son_list))
+        @foreach($value->son_list as $k => $v)
+          <tr class="son son{{ $value->id }}" style="display: none;">
+            <td>
+              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{{ $v->id }}'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{{ $v->id }}</td>
+            <td>|— {{ $v->rule_name }}</td>
+            <td>{{ $v->rule_desc }}</td>
+            <td>{{ $v->route_name }}</td>
+            <td>{{ $v->add_time }}</td>
+            <td>{{ $v->update_time }}</td>
+            <td>|—<button class="layui-btn layui-btn-xs">详情</button></td>
+            <td>
+              @if($k > 0)
+                <button class="layui-btn layui-btn-xs" onclick="changeSort('{{ $v->id }}', 'up')">上移</button>
+              @endif
+              @if($k + 1 < count($value->son_list))
+                <button class="layui-btn layui-btn-xs" onclick="changeSort('{{ $v->id }}', 'down')">下移</button>
+              @endif
+            </td>
+            <td class="td-manage">
+              <a title="编辑"  onclick="x_admin_show('编辑','{{ url('admin/ruleEdit') . '/' . $v->id }}')" href="javascript:;">
+                <i class="layui-icon">&#xe642;</i>
+              </a>
+              <a title="删除" onclick="member_del(this, '{{ $v->id }}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+            </td>
+          </tr>
         @endforeach
+      @endif
     @endforeach
     </tbody>
   </table>
@@ -156,7 +158,7 @@
     }
 
     // 移动排序位置
-    function changeSort(id, action_type, class_name, k) {
+    function changeSort(id, action_type) {
 
         $.ajax({
             url: '{{ url('admin/changeSort') }}',
@@ -167,26 +169,53 @@
                 if (res.code == '0000') {
                     layer.msg('操作成功!',{icon: 1,time:1000});
 
-                    if (class_name == null) {
+                    if (res.parent_id == '0') {
                         // 父类权限 ，直接刷新页面
                         location.href = location.href;
                     } else {
-                        // 子类权限，移动元素位置
-                        var obj_1 = $('.' + class_name + k); // 点击的行
-                        var obj_2 = ''; // 要交换位置的行
-                        var obj_before = ''; // 前面位置的行
-                        var obj_after = ''; // 后面位置的行
-                        if (action_type == 'up') {
-                            obj_2 = $('.' + class_name + (parseInt(k) - 1));
-                            obj_before = obj_2;
-                            obj_after = obj_1;
-                        } else {
-                            obj_2 = $('.' + class_name + (parseInt(k) + 1));
-                            obj_before = obj_1;
-                            obj_after = obj_2;
+
+                        var parent_id = res.data.parent_id;
+                        var son_list = res.data.list;
+
+                        var son_list_html = '';
+                        for (var i in son_list) {
+                            console.log(i);
+                            console.log(son_list.length);
+
+                            son_list_html += '<tr class="son son' + son_list[i].parent_id + '">'
+                                + '<td>'
+                                + '<div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id="' + son_list[i].id + '"><i class="layui-icon"></i></div>'
+                                + '</td>'
+                                + '<td>' + son_list[i].id + '</td>'
+                                + '<td>|— ' + son_list[i].rule_name + '</td>'
+                                + '<td>' + son_list[i].rule_desc + '</td>'
+                                + '<td>' + son_list[i].route_name + '</td>'
+                                + '<td>' + son_list[i].add_time + '</td>'
+                                + '<td>' + son_list[i].update_time + '</td>'
+                                + '<td>|—<button class="layui-btn layui-btn-xs">详情</button></td>'
+                                + '<td>';
+
+                            if (parseInt(i) > 0) {
+                                son_list_html += '<button class="layui-btn layui-btn-xs" onclick="changeSort(' + son_list[i].id + ', \'up\')">上移</button>';
+                            }
+                            if (parseInt(i) + 1 < son_list.length) {
+                                son_list_html += '<button class="layui-btn layui-btn-xs" onclick="changeSort(' + son_list[i].id + ', \'down\')">下移</button>'
+                            }
+
+                            son_list_html += '</td>'
+                                + '<td class="td-manage">'
+                                + '<a title="编辑" onclick="x_admin_show(\'编辑\',\'http://nfsqcx.test/admin/ruleEdit/' + son_list[i].id + '\')" href="javascript:;">'
+                                + '<i class="layui-icon"></i>'
+                                + '</a>'
+                                + '<a title="删除" onclick="member_del(this, ' + son_list[i].id + ')" href="javascript:;"><i class="layui-icon"></i></a>'
+                                + '</td>'
+                                + '</tr>';
+
                         }
-                        // 后面的位置 插入 前面的位置，互换
-                        $(obj_after).insertBefore($(obj_before));
+
+                        $('.son' + parent_id).remove();
+                        $('.parent' + parent_id).after(son_list_html);
+
                     }
 
                 } else {

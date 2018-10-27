@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class RuleController extends Controller
 {
@@ -33,6 +34,36 @@ class RuleController extends Controller
 
     public function ruleAdd(Request $request)
     {
+        if ($request->isMethod('get')) {
+            // 获取 顶层 权限
+            $rule_list = DB::table('cx_rule')->where('parent_id', 0)->get();
+            return view('admin/ruleAdd', ['list' => $rule_list]);
+        } else {
+
+            $validator = Validator::make($request->all(), [
+                'rule_name' => 'required|unique:cx_rule,rule_name',
+                'route_name' => 'required|unique:cx_rule,route_name',
+            ], [
+                'rule_name.required' => '权限名必填',
+                'rule_name.unique' => '权限名已存在',
+                'route_name.required' => '访问路由必填',
+                'route_name.unique' => '访问路由已存在',
+            ]);
+            if ($validator->fails()) {
+                return $this->showJson('9999', $validator->errors()->first());
+            }
+
+            // 获取 同一个 parent_id 下的 最大 sort，新插入数据 默认 当前 最大sort + 1
+            $max_sort = DB::table('cx_rule')->where('parent_id', $request->parent_id)->max('sort');
+
+            $insert_data = $request->all();
+            unset($insert_data['_token']);
+            $insert_data['sort'] = $max_sort + 1;
+
+            DB::table('cx_rule')->insert($insert_data);
+
+            return $this->showJson('0000', '添加成功');
+        }
 
     }
 
@@ -72,6 +103,9 @@ class RuleController extends Controller
         // 更新主动要换位的这条数据
         DB::table('cx_rule')->where('id', $id)->update(['sort' => $sort_new]);
 
-        return $this->showJson('0000', '操作成功');
+        // 返回同个 parant_id 的所有记录
+        $rule_list = DB::table('cx_rule')->where('parent_id', $paren_id)->orderBy('sort', 'ASC')->get();
+
+        return $this->showJson('0000', '操作成功', ['parent_id' => $paren_id, 'list' => $rule_list]);
     }
 }
