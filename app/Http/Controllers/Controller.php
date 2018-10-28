@@ -21,4 +21,15 @@ class Controller extends BaseController
         }
     }
 
+    public function getNumberSalt()
+    {
+        $code = '';
+        //随机生成4位数字和字母混合的字符串
+        $pattern = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLOMNOPQRSTUVWXYZ';
+        for($i = 0; $i < 4; $i++) {
+            $code .= $pattern{mt_rand(0, 61)};
+        }
+        return $code;
+    }
+
 }
