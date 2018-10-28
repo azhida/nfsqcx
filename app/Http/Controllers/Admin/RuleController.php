@@ -69,12 +69,37 @@ class RuleController extends Controller
 
     public function ruleEdit(Request $request)
     {
+        if ($request->isMethod('get')) {
+
+            $parent_rule_list = DB::table('cx_rule')->where('parent_id', 0)->orderBy('sort', 'ASC')->get();
+            $rule_info = DB::table('cx_rule')->where('id', $request->id)->first();
+
+            return view('admin/ruleEdit', ['info' => $rule_info, 'list' => $parent_rule_list]);
+
+        } else {
+
+            $update_data = $request->all();
+            unset($update_data['_token']);
+            $update_data['update_time'] = date('Y-m-d H:i:s', time());
+
+            DB::table('cx_rule')->where('id', $request->id)->update($update_data);
+
+            return $this->showJson('0000', '操作成功');
+
+        }
 
     }
 
     public function ruleDelete(Request $request)
     {
+        // 删除 id 在 ids 中的 rule 记录
+        // 删除 parent_id 在 parent_id 在 rule 中的记录
+        // 删除 角色已绑定的权限
+        DB::table('cx_rule')->whereIn('id', $request->ids)->delete();
+        DB::table('cx_rule')->whereIn('parent_id', $request->ids)->delete();
+        DB::table('cx_role_rule')->whereIn('rule_id', $request->ids)->delete();
 
+        return $this->showJson('0000', '删除成功');
     }
 
     public function changeSort(Request $request)

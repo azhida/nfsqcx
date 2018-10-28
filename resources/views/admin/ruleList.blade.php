@@ -252,16 +252,16 @@
 
     /*用户-删除*/
     function member_del(obj,id){
-        layer.confirm('确认要删除吗？',function(index){
+        layer.confirm('确认要删除吗？',function(index) {
             //发异步删除数据
             $.ajax({
-                url: '{{ url('admin/ruleDetele') }}',
+                url: '{{ url('admin/ruleDelete') }}',
                 type: 'post',
                 data: {ids: [id], _token: '{{ csrf_token() }}'},
                 success: function (res) {
                     console.log(res);
                     if (res.code == '0000') {
-                        $(obj).parents("tr").remove();
+                        location.href = location.href;
                         layer.msg('已删除!',{icon:1,time:1000});
                     } else {
                         layer.msg('删除失败!',{icon:2,time:1000});
