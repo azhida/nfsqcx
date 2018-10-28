@@ -88,7 +88,28 @@ class SellersController extends Controller
     {
         if ($request->isMethod('get')) {
 
+            $seller_info = DB::table('cx_saler')->where('id', $request->id)->first();
+            $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
+
+            return view('admin/sellersEdit', ['list' => $office_list, 'info' => $seller_info]);
         } else {
+
+            $update_data = $request->all();
+            unset($update_data['_token']);
+            if ($request->account) {
+                // 先查 修改的 账号 是否已经存在
+                $count = DB::table('cx_saler')->where('id', '<>', $request->id)->where('account', $request->account)->count();
+                if ($count) return $this->showJson('9999', '促销员账号已经在');
+            }
+            if ($request->password) {
+                $salt = $this->getNumberSalt();
+                $update_data['password'] = md5($request->password . $salt );
+                $update_data['salt'] = $salt;
+            }
+
+            DB::table('cx_saler')->where('id', $request->id)->update($update_data);
+
+            return $this->showJson('0000', '操作成功');
 
         }
 

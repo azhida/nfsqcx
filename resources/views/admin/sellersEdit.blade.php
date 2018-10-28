@@ -24,13 +24,14 @@
 <div class="x-body">
     <form class="layui-form">
         {{ csrf_field() }}
+        <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
         <div class="layui-form-item">
             <label for="account" class="layui-form-label">
                 <span class="x-red">*</span>登录账号
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="account" name="account" required="" lay-verify="required"
-                       autocomplete="off" class="layui-input">
+                       autocomplete="off" class="layui-input" value="{{ $info->account ?? '' }}">
             </div>
         </div>
         <div class="layui-form-item">
@@ -39,7 +40,7 @@
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="password" name="password" required=""
-                       autocomplete="off" class="layui-input">
+                       autocomplete="off" class="layui-input" value="">
             </div>
         </div>
 
@@ -49,7 +50,7 @@
                 <select name="office_id" required="required" lay-verify="required">
                     <option value="">请选择办事处</option>
                     @foreach($list as $value)
-                        <option value="{{ $value->id }}">{{ $value->name ?? '' }}</option>
+                        <option value="{{ $value->id }}" @if($info->office_id == $value->id) selected @endif>{{ $value->name ?? '' }}</option>
                     @endforeach
                 </select>
             </div>
@@ -57,7 +58,7 @@
 
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label"></label>
-            <button type="button" class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+            <button type="button" class="layui-btn" lay-filter="add" lay-submit="">修改</button>
         </div>
     </form>
 </div>
@@ -72,7 +73,7 @@
             console.log(data);
             //发异步，把数据提交给php
             $.ajax({
-                url: '{{ url('admin/sellersAdd') }}',
+                url: '{{ url('admin/sellersEdit') }}',
                 type: 'post',
                 data: data.field,
                 success: function (res) {

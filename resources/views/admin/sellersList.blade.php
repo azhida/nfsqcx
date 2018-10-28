@@ -40,7 +40,7 @@
         <select name="office_id">
           <option value="">请选择办事处</option>
           @foreach($office_list as $item)
-          <option value="{{ $item->id }}" @if($search_params['office_id'] == $item->id) selected @endif>{{ $item->name ?? '' }}</option>
+          <option value="{{ $item->id }}" @if(($search_params['office_id'] ?? '') == $item->id) selected @endif>{{ $item->name ?? '' }}</option>
           @endforeach
         </select>
       </div>
