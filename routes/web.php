@@ -81,6 +81,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         // 权限排序（菜单排序）
         Route::post('changeSort', 'RuleController@changeSort');
 
+        // 促销员管理
+        Route::get('sellersList', 'SellersController@sellersList');
+        Route::get('sellersAdd', 'SellersController@sellersAdd');
+        Route::post('sellersAdd', 'SellersController@sellersAdd');
+        Route::get('sellersEdit/{id}', 'SellersController@sellersEdit');
+        Route::post('sellersEdit', 'SellersController@sellersEdit');
+        Route::post('sellersDelete', 'SellersController@sellersDelete');
+
+        //
+
+
 
     });
 
