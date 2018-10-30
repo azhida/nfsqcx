@@ -111,6 +111,21 @@
             </li>
             <li>
                 <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>经销商管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{{ url('admin/dealersList') }}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>经销商列表</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
                     <i class="iconfont">&#xe723;</i>
                     <cite>订单管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i>

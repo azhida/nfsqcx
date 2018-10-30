@@ -97,6 +97,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('officesEdit', 'OfficesController@officesEdit');
         Route::post('officesDelete', 'OfficesController@officesDelete');
 
+        // 经销商管理
+        Route::get('dealersList', 'DealersController@dealersList');
+        Route::get('dealersAdd', 'DealersController@dealersAdd');
+        Route::post('dealersAdd', 'DealersController@dealersAdd');
+        Route::get('dealersEdit/{id}', 'DealersController@dealersEdit');
+        Route::post('dealersEdit', 'DealersController@dealersEdit');
+        Route::post('dealersDelete', 'DealersController@dealersDelete');
+
 
 
 
