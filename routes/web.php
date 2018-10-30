@@ -89,7 +89,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('sellersEdit', 'SellersController@sellersEdit');
         Route::post('sellersDelete', 'SellersController@sellersDelete');
 
-        //
+        // 办事处管理
+        Route::get('officesList', 'OfficesController@officesList');
+        Route::get('officesAdd', 'OfficesController@officesAdd');
+        Route::post('officesAdd', 'OfficesController@officesAdd');
+        Route::get('officesEdit/{id}', 'OfficesController@officesEdit');
+        Route::post('officesEdit', 'OfficesController@officesEdit');
+        Route::post('officesDelete', 'OfficesController@officesDelete');
+
+
 
 
 
