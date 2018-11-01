@@ -105,6 +105,13 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('dealersEdit', 'DealersController@dealersEdit');
         Route::post('dealersDelete', 'DealersController@dealersDelete');
 
+        // 销售渠道管理
+        Route::get('saleschannelList', 'SaleschannelController@saleschannelList');
+        Route::get('saleschannelAdd', 'SaleschannelController@saleschannelAdd');
+        Route::post('saleschannelAdd', 'SaleschannelController@saleschannelAdd');
+        Route::get('saleschannelEdit/{id}', 'SaleschannelController@saleschannelEdit');
+        Route::post('saleschannelEdit', 'SaleschannelController@saleschannelEdit');
+        Route::post('saleschannelDelete', 'SaleschannelController@saleschannelDelete');
 
 
 
