@@ -113,6 +113,32 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('saleschannelEdit', 'SaleschannelController@saleschannelEdit');
         Route::post('saleschannelDelete', 'SaleschannelController@saleschannelDelete');
 
+        // 产品分类管理
+        Route::get('productCatList', 'ProductcatController@productCatList');
+        Route::get('productCatAdd', 'ProductcatController@productCatAdd');
+        Route::post('productCatAdd', 'ProductcatController@productCatAdd');
+        Route::get('productCatEdit/{id}', 'ProductcatController@productCatEdit');
+        Route::post('productCatEdit', 'ProductcatController@productCatEdit');
+        Route::post('productCatDelete', 'ProductcatController@productCatDelete');
+
+        // 产品口味管理
+        Route::get('flavorList', 'FlavorController@flavorList');
+        Route::get('flavorAdd', 'FlavorController@flavorAdd');
+        Route::post('flavorAdd', 'FlavorController@flavorAdd');
+        Route::get('flavorEdit/{id}', 'FlavorController@flavorEdit');
+        Route::post('flavorEdit', 'FlavorController@flavorEdit');
+        Route::post('flavorDelete', 'FlavorController@flavorDelete');
+
+        // 产品管理
+        Route::get('productList', 'ProductController@productList');
+        Route::get('productAdd', 'ProductController@productAdd');
+        Route::post('productAdd', 'ProductController@productAdd');
+        Route::get('productEdit/{id}', 'ProductController@productEdit');
+        Route::post('productEdit', 'ProductController@productEdit');
+        Route::post('productDelete', 'ProductController@productDelete');
+
+
+
 
 
 

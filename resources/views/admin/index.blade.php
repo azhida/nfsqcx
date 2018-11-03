@@ -141,6 +141,51 @@
             </li>
             <li>
                 <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>产品分类管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{{ url('admin/productCatList') }}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>分类列表</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>产品口味管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{{ url('admin/flavorList') }}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>口味列表</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>产品管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{{ url('admin/productList') }}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>产品列表</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
                     <i class="iconfont">&#xe723;</i>
                     <cite>订单管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
