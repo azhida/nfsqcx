@@ -137,6 +137,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('productEdit', 'ProductController@productEdit');
         Route::post('productDelete', 'ProductController@productDelete');
 
+        Route::get('uploadProductImgToOss', 'ProductController@uploadProductImgToOss');
+
 
 
 

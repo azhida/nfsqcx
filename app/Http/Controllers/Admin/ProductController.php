@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\OSS;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -72,5 +74,21 @@ class ProductController extends Controller
     {
         DB::table('cx_product')->whereIn('id', $request->ids)->delete();
         return $this->showJson('0000', '操作成功');
+    }
+
+    // 将 产品图片上传至 oss
+    public function uploadProductImgToOss()
+    {
+        $product_list = DB::table('cx_product')->orderBy('id', 'DESC')->get();
+        foreach ($product_list as $key => $value) {
+            if ($value->oss_img_url) continue;
+            $oss = new OSS();
+            $res = $oss->uploadFile1('product', public_path() . '/static/' . $value->img_url);
+            Log::error('$key = ' . $key . ' ; $value = ' . json_encode($value));
+            Log::error('$key = ' . $key . ' ; $res = ' . json_encode($res));
+            if ($res['code'] == '0') {
+                DB::table('cx_product')->where('id', $value->id)->update(['oss_img_url' => $res['file_name']]);
+            }
+        }
     }
 }
