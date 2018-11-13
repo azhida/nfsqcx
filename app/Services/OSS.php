@@ -25,9 +25,15 @@ class OSS {
         return pathinfo($file_name, PATHINFO_EXTENSION);
     }
 
+    /**
+     * 上传文件
+     * @param string $save_path 保存的文件夹，如 product，前面不带 /
+     * @param string $file_name 要上传的文件，必须是绝对路径
+     * @return array
+     */
     public function uploadFile1($save_path = '', $file_name = '')
     {
-        $save_path = $save_path . '/' . date('Ymd') . '/' . time() . '.' . $this->getExtension($file_name);
+        $save_path = $save_path . '/' . date('Ymd') . '/' . md5(time() . $file_name) . '.' . $this->getExtension($file_name);
         try{
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
             $res = $ossClient->uploadFile($this->bucket, $save_path, $file_name);
