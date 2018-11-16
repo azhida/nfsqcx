@@ -110,4 +110,16 @@ class FlavorController extends Controller
         return $this->showJson('0000', '操作成功');
     }
 
+    // 根据 cat_id 获取 数据
+    public function getFlavorListByCatId(Request $request)
+    {
+        $cat_id = $request->cat_id ?? 0;
+        if (!$cat_id) {
+            return $this->showJson('9999', '产品分类错误');
+        }
+
+        $flavor_list = DB::table('cx_flavor')->where('cat_id', $cat_id)->get();
+        return $this->showJson('0000', '数据获取成功', $flavor_list);
+    }
+
 }

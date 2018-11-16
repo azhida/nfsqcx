@@ -129,6 +129,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('flavorEdit', 'FlavorController@flavorEdit');
         Route::post('flavorDelete', 'FlavorController@flavorDelete');
 
+        Route::post('getFlavorListByCatId', 'FlavorController@getFlavorListByCatId');
+
         // 产品管理
         Route::get('productList', 'ProductController@productList');
         Route::get('productAdd', 'ProductController@productAdd');
@@ -138,6 +140,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('productDelete', 'ProductController@productDelete');
 
         Route::get('uploadProductImgToOss', 'ProductController@uploadProductImgToOss');
+        Route::post('uploadProductImgToOssOnlyOne', 'ProductController@uploadProductImgToOssOnlyOne'); // 将客户端上传图片保存到oss
 
 
 

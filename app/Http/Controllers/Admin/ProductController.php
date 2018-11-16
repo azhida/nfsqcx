@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -62,7 +63,38 @@ class ProductController extends Controller
 
     public function productAdd(Request $request)
     {
+        if ($request->isMethod('get')) {
+            $product_cat_list = DB::table('cx_product_cat')->get();
+            return view('admin/productAdd', ['product_cat_list' => $product_cat_list]);
+        } else {
+            
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|unique:cx_product,name',
+            ], [
+                'name.required' => '产品名称必填',
+                'name.unique' => '产品名称已存在',
+            ]);
+            if ($validator->fails()) {
+                return $this->showJson('9999', $validator->errors()->first());
+            }
 
+            $insert_data = [
+                'cat_id' => $request->cat_id,
+                'flavor_id' => $request->flavor_id,
+                'name' => $request->name,
+                'oss_img_url' => $request->product_img,
+                'create_time' => time(),
+                'update_time' => time(),
+            ];
+
+            $id = DB::table('cx_product')->insertGetId($insert_data);
+            if ($id) {
+                return $this->showJson('0000', '操作成功');
+            } else {
+                return $this->showJson('9999', '操作失败');
+            }
+
+        }
     }
 
     public function productEdit(Request $request)
@@ -88,6 +120,46 @@ class ProductController extends Controller
             Log::error('$key = ' . $key . ' ; $res = ' . json_encode($res));
             if ($res['code'] == '0') {
                 DB::table('cx_product')->where('id', $value->id)->update(['oss_img_url' => $res['file_name']]);
+            }
+        }
+    }
+
+    // 接受客户端上传 base64 图片，并上传 oss -- 一张
+    public function uploadProductImgToOssOnlyOne(Request $request)
+    {
+        $file = $request->file('file');
+        // 文件是否上传成功
+        if ($file->isValid()) {
+
+            $allowed_extensions = ["xls", 'png', 'jpg']; // 允许的文件类型
+            if($file->getClientOriginalExtension() && !in_array($file->getClientOriginalExtension(), $allowed_extensions)) {
+                return $this->showJson('9999', '不允许上传后缀为' . $file->getClientOriginalExtension() . '的文件');
+            }else{
+
+                $destinationPath = 'upload/' . date('YmdHis') . '/';
+                $extension = $file->getClientOriginalExtension();
+                $fileName = date('Ymd') . '.' . $extension;
+                $info = $file->move($destinationPath, $fileName);
+                if($info){
+                    // 本地服务器保存成功
+                    $file_name = public_path() . '/' . $destinationPath . $fileName;
+
+                    // 上传oss
+                    $oss = new OSS();
+                    $res = $oss->uploadFile1('product', $file_name);
+                    unlink($file_name);
+                    if ($res['code'] == '0') {
+                        // oss上传成功
+                        return $this->showJson('0000', $res['msg'], $res['file_name']);
+                    } else {
+                        // oss上传失败
+                        return $this->showJson('9999', $res['msg']);
+                    }
+
+                }else{
+                    return $this->showJson('9999', '上传失败');
+                }
+
             }
         }
     }
