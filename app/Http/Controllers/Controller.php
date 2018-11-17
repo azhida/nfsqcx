@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\OSS;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -30,6 +32,28 @@ class Controller extends BaseController
             $code .= $pattern{mt_rand(0, 61)};
         }
         return $code;
+    }
+    
+    // 根据 url 删除 oss图片
+    public function deleteOssFile(Request $request)
+    {
+        $file_name = $request->file_name ?? '';
+        if (!$file_name) {
+            return $this->showJson('9999', '请传递正确的文件名');
+        }
+        $oss = new OSS();
+        $res = $oss->deleteFile($file_name);
+        if ($res['code'] == '0') {
+            return $this->showJson('0000', $res['msg']);
+        } else {
+            return $this->showJson('9999', $res['msg']);
+        }
+    }
+
+    // 获取 oss 文件的访问路径
+    public function getOssFileUrl($file_name = '')
+    {
+        return 'http://' . env('OSS_BUCKET') . '.' . env('OSS_ENDPOINT') . '/' . $file_name;
     }
 
 }

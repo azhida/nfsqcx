@@ -145,7 +145,7 @@
         layer.confirm('确认要删除吗？',function(index){
             //发异步删除数据
             $.ajax({
-                url: '{{ url('admin/sellersDelete') }}',
+                url: '{{ url('admin/productDelete') }}',
                 type: 'post',
                 data: {ids: [id], _token: '{{ csrf_token() }}'},
                 success: function (res) {
@@ -167,7 +167,7 @@
         layer.confirm('确认要删除吗？'+data,function(index){
             //捉到所有被选中的，发异步进行删除
             $.ajax({
-                url: '{{ url('admin/sellersDelete') }}',
+                url: '{{ url('admin/productDelete') }}',
                 type: 'post',
                 data: {ids: data, _token: '{{ csrf_token() }}'},
                 success: function (res) {

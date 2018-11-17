@@ -3,6 +3,9 @@
 Route::get('/', 'Index\LoginController@login');
 Route::get('index', 'Index\LoginController@login');
 
+// 删除 oss 图片
+Route::post('deleteOssFile', 'Controller@deleteOssFile');
+
 // 前台
 Route::group(['prefix' => 'index', 'namespace' => 'Index'], function()
 {

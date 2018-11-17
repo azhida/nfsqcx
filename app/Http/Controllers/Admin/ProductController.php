@@ -52,13 +52,12 @@ class ProductController extends Controller
                     $value->flavor_name = $v->name;
                 }
             }
-            $value->img_url = 'http://www.nfsqcx.com/static/' . $value->img_url;
+            $value->img_url = $this->getOssFileUrl($value->img_url);
             $value->add_time = date('Y-m-d H:i:s', $value->create_time);
             $value->update_time = date('Y-m-d H:i:s', $value->update_time);
         }
 
         return view('admin/productList', ['list' => $product_list, 'cat_list' => $product_cat_list, 'flavor_list' => $flavor_list, 'search_params' => $request->all()]);
-
     }
 
     public function productAdd(Request $request)
@@ -67,7 +66,7 @@ class ProductController extends Controller
             $product_cat_list = DB::table('cx_product_cat')->get();
             return view('admin/productAdd', ['product_cat_list' => $product_cat_list]);
         } else {
-            
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required|unique:cx_product,name',
             ], [
@@ -99,7 +98,27 @@ class ProductController extends Controller
 
     public function productEdit(Request $request)
     {
+        if ($request->isMethod('get')) {
+            $info = DB::table('cx_product')->where('id', $request->id)->first();
+            $cat_list = DB::table('cx_product_cat')->orderBy('id', 'DESC')->get();
+            $flavor_list = DB::table('cx_flavor')->orderBy('cat_id', 'DESC')->get();
+            return view('admin/productEdit', ['info' => $info, 'cat_list' => $cat_list, 'flavor_list' => $flavor_list]);
+        } else {
 
+            $update_data = $request->all();
+            unset($update_data['_token']);
+            unset($update_data['file']);
+            if ($request->name) {
+                // 先查 修改的 账号 是否已经存在
+                $count = DB::table('cx_product')->where('id', '<>', $request->id)->where('name', $request->name)->count();
+                if ($count) return $this->showJson('9999', '产品名称已经在');
+            }
+
+            $update_data['update_time'] = time();
+            DB::table('cx_product')->where('id', $request->id)->update($update_data);
+
+            return $this->showJson('0000', '操作成功');
+        }
     }
 
     public function productDelete(Request $request)
@@ -115,7 +134,7 @@ class ProductController extends Controller
         foreach ($product_list as $key => $value) {
             if ($value->oss_img_url) continue;
             $oss = new OSS();
-            $res = $oss->uploadFile1('product', public_path() . '/static/' . $value->img_url);
+            $res = $oss->uploadFile('product', public_path() . '/static/' . $value->img_url);
             Log::error('$key = ' . $key . ' ; $value = ' . json_encode($value));
             Log::error('$key = ' . $key . ' ; $res = ' . json_encode($res));
             if ($res['code'] == '0') {
@@ -136,9 +155,9 @@ class ProductController extends Controller
                 return $this->showJson('9999', '不允许上传后缀为' . $file->getClientOriginalExtension() . '的文件');
             }else{
 
-                $destinationPath = 'upload/' . date('YmdHis') . '/';
+                $destinationPath = 'upload/' . date('Ymd') . '/';
                 $extension = $file->getClientOriginalExtension();
-                $fileName = date('Ymd') . '.' . $extension;
+                $fileName = date('YmdHis') . '.' . $extension;
                 $info = $file->move($destinationPath, $fileName);
                 if($info){
                     // 本地服务器保存成功
@@ -146,7 +165,7 @@ class ProductController extends Controller
 
                     // 上传oss
                     $oss = new OSS();
-                    $res = $oss->uploadFile1('product', $file_name);
+                    $res = $oss->uploadFile('product', $file_name);
                     unlink($file_name);
                     if ($res['code'] == '0') {
                         // oss上传成功
