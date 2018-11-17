@@ -145,7 +145,13 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::get('uploadProductImgToOss', 'ProductController@uploadProductImgToOss');
         Route::post('uploadProductImgToOssOnlyOne', 'ProductController@uploadProductImgToOssOnlyOne'); // 将客户端上传图片保存到oss
 
-
+        // 活动品项管理
+        Route::get('activityitemList', 'ActivityitemController@activityitemList');
+        Route::get('activityitemAdd', 'ActivityitemController@activityitemAdd');
+        Route::post('activityitemAdd', 'ActivityitemController@activityitemAdd');
+        Route::get('activityitemEdit/{id}', 'ActivityitemController@activityitemEdit');
+        Route::post('activityitemEdit', 'ActivityitemController@activityitemEdit');
+        Route::post('activityitemDelete', 'ActivityitemController@activityitemDelete');
 
 
 
