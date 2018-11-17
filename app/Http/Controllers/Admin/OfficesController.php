@@ -91,6 +91,14 @@ class OfficesController extends Controller
 
     public function officesDelete(Request $request)
     {
+        $count = DB::table('cx_dealers')->whereIn('office_id', $request->ids)->count();
+        if ($count > 0) {
+            return $this->showJson('9999', '该办事处已绑定经销商');
+        }
+        $count = DB::table('cx_saler')->whereIn('office_id', $request->ids)->count();
+        if ($count > 0) {
+            return $this->showJson('9999', '该办事处已绑定促销员');
+        }
         DB::table('cx_office')->whereIn('id', $request->ids)->delete();
         return $this->showJson('0000', '操作成功');
     }

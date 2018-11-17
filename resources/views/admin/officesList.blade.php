@@ -133,9 +133,9 @@
                     console.log(res);
                     if (res.code == '0000') {
                         $(obj).parents("tr").remove();
-                        layer.msg('已删除!',{icon:1,time:1000});
+                        layer.msg(res.mes,{icon:1,time:1000});
                     } else {
-                        layer.msg('删除失败!',{icon:2,time:1000});
+                        layer.msg(res.mes,{icon:2,time:1000});
                     }
                     return false;
                 }
@@ -156,10 +156,10 @@
                 success: function (res) {
                     console.log(res);
                     if (res.code == '0000') {
-                        layer.msg('删除成功', {icon: 1});
+                        layer.msg(res.mes, {icon: 1});
                         $(".layui-form-checked[data-id!=1]").not('.header').parents('tr').remove();
                     } else {
-                        layer.msg('删除失败', {icon: 2});
+                        layer.msg(res.mes, {icon: 2});
                     }
                     return false;
                 }
