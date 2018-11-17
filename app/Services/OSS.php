@@ -10,6 +10,7 @@ class OSS {
     private $accessKeySecret = '';
     private $endpoint = '';
     private $bucket = '';
+    private $ossClient;
 
     public function __construct()
     {
@@ -17,12 +18,7 @@ class OSS {
         $this->accessKeySecret = env('OSS_ACCESS_KEY_SECRET');
         $this->endpoint = env('OSS_ENDPOINT');
         $this->bucket = env('OSS_BUCKET');
-    }
-
-    // 获取文件扩展名
-    public function getExtension($file_name)
-    {
-        return pathinfo($file_name, PATHINFO_EXTENSION);
+        $this->ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
     }
 
     /**
@@ -31,15 +27,35 @@ class OSS {
      * @param string $file_name 要上传的文件，必须是绝对路径
      * @return array
      */
-    public function uploadFile1($save_path = '', $file_name = '')
+    public function uploadFile($save_path = '', $file_name = '')
     {
         $save_path = $save_path . '/' . date('Ymd') . '/' . md5(time() . $file_name) . '.' . $this->getExtension($file_name);
         try{
-            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
-            $res = $ossClient->uploadFile($this->bucket, $save_path, $file_name);
+            $res = $this->ossClient->uploadFile($this->bucket, $save_path, $file_name);
         } catch(OssException $e) {
             return ['code' => '1', 'msg' => $e->getMessage()];
         }
-        return ['code' => '0', 'msg' => '上传成功', 'file_name' => $res['info']['url']];
+        return ['code' => '0', 'msg' => '上传成功', 'file_name' => $save_path];
+    }
+
+    /**
+     * 删除文件
+     * @param string $file_name
+     * @return array
+     */
+    public function deleteFile($file_name = '')
+    {
+        try{
+            $this->ossClient->deleteObject($this->bucket, $file_name);
+        } catch(OssException $e) {
+            return ['code' => '1', 'msg' => $e->getMessage()];
+        }
+        return ['code' => '0', 'msg' => '删除成功'];
+    }
+
+    // 获取文件扩展名
+    public function getExtension($file_name)
+    {
+        return pathinfo($file_name, PATHINFO_EXTENSION);
     }
 }
