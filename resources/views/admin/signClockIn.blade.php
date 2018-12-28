@@ -35,16 +35,21 @@
     <form class="layui-form layui-col-md12 x-so" id="search_form">
       <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{ $search_params['start'] ?? '' }}">
       <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{ $search_params['end'] ?? '' }}">
-      <input type="text" name="name"  placeholder="请输入产品分类名称" autocomplete="off" class="layui-input" value="{{ $search_params['name'] ?? '' }}">
+      <input type="text" name="account"  placeholder="请输入办事处账号" autocomplete="off" class="layui-input" value="{{ $search_params['account'] ?? '' }}">
+      <input type="text" name="office_name"  placeholder="请输入办事处名称" autocomplete="off" class="layui-input" value="{{ $search_params['office_name'] ?? '' }}">
+      <input type="text" name="dealers_name"  placeholder="请输入经销商名称" autocomplete="off" class="layui-input" value="{{ $search_params['dealers_name'] ?? '' }}">
+      <input type="text" name="activity_item_name"  placeholder="请输入品牌名称" autocomplete="off" class="layui-input" value="{{ $search_params['activity_item_name'] ?? '' }}">
+      <input type="text" name="sales_name"  placeholder="请输入渠道名称" autocomplete="off" class="layui-input" value="{{ $search_params['sales_name'] ?? '' }}">
+      <input type="text" name="points"  placeholder="请输入售点名称" autocomplete="off" class="layui-input" value="{{ $search_params['points'] ?? '' }}">
+      <input type="text" name="phone"  placeholder="请输入手机号" autocomplete="off" class="layui-input" value="{{ $search_params['phone'] ?? '' }}">
       <button class="layui-btn"  lay-submit="" lay-filter="sreach" onclick="getSetCustomPageData(1)"><i class="layui-icon">&#xe615;</i></button>
     </form>
   </div>
   <xblock>
-    <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-    <button class="layui-btn" onclick="x_admin_show('添加产品分类','{{ url('admin/productCatAdd') }}')"><i class="layui-icon"></i>添加</button>
+    <button class="layui-btn"></button>
     <span class="x-right" style="line-height:40px">共有数据：{{ $list->total() }} 条</span>
   </xblock>
-  <table class="layui-table">
+  <table class="layui-table" lay-size="sm">
     <thead>
     <tr>
       <th>ID</th>
