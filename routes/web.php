@@ -2,6 +2,8 @@
 
 Route::get('/', 'Index\LoginController@login');
 Route::get('index', 'Index\LoginController@login');
+// 将 账户表 合并到 办事处表中
+Route::get('mergeAccountToOffice', 'CommonController@mergeAccountToOffice');
 
 // 删除 oss 图片
 Route::post('deleteOssFile', 'Controller@deleteOssFile');
@@ -153,7 +155,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('activityitemEdit', 'ActivityitemController@activityitemEdit');
         Route::post('activityitemDelete', 'ActivityitemController@activityitemDelete');
 
-
+        // 打卡管理
+        Route::get('signclockinList', 'SignclockController@signclockinList'); // 上班打卡管理
+        Route::get('signclockoutList', 'SignclockController@signclockoutList'); // 下班打卡管理
+        Route::get('signclockList', 'SignclockController@signclockList'); // 上下班打卡管理（合并）
+        Route::get('signclockDetail/{sign_clock_out_id}', 'SignclockController@signclockDetail'); // 打卡详情
 
 
     });
