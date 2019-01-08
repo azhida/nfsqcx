@@ -21,9 +21,7 @@
 
 <body>
 
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-  <legend>打卡详情</legend>
-</fieldset>
+<h3 style="margin-left: 10px;">打卡详情：</h3>
 <table class="layui-table layui-col-xs6" lay-even="" lay-skin="nob" style="margin-left: 50px;">
   <tbody>
   <tr><td>用户账号：</td><td>{{ $info->account ?? '' }}</td></tr>
@@ -36,9 +34,7 @@
   </tbody>
 </table>
 <hr>
-<div class="layui-inline">
-  <label class="layui-form-label">销售数据：</label>
-</div>
+<h3 style="margin-left: 10px;">销售数据：</h3>
 <table class="layui-table layui-col-xs6" lay-even="" lay-skin="" style="margin-left: 50px;">
   <thead>
   <tr><th>产品名称</th><th>数量</th></tr>

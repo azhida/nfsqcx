@@ -56,57 +56,41 @@ class SignclockController extends Controller
     // 下班打卡列表
     public function signclockoutList(Request $request)
     {
-        $query = DB::table('cx_sign_clock_out');
+        $query = DB::table('cx_sign')
+            ->select('cx_sign.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name')
+            ->join('cx_saler', 'cx_saler.id', '=', 'cx_sign.user_id')
+            ->join('cx_office', 'cx_office.id', '=', 'cx_sign.office_id')
+            ->join('cx_dealers', 'cx_dealers.id', '=', 'cx_sign.dealers_id')
+            ->where('type', 2);
+
         if ($request->start) {
-            $query = $query->where('create_time', '>=', strtotime($request->start));
+            $query = $query->where('cx_sign.create_time', '>=', strtotime($request->start));
         }
         if ($request->end) {
-            $query = $query->where('create_time', '<=', strtotime($request->end) + 60 * 60 * 24);
+            $query = $query->where('cx_sign.create_time', '<=', strtotime($request->end) + 60 * 60 * 24);
         }
-        if ($request->name) {
-            $query = $query->where('name', 'like', '%' . $request->name . '%');
+        if ($request->user_name) { // 办事处账号
+            $query = $query->where('cx_saler.account', 'like', '%' . $request->user_name . '%');
         }
-
-        $clock_in_list = $query->where('type', 2)->orderBy('id', 'DESC')->paginate(10);
-
-        $user_ids = array_column($clock_in_list->items(), 'user_id');
-        $user_list = [];
-        if (!empty($user_ids)) {
-            $user_list = DB::table('cx_saler')->whereIn('id', $user_ids)->get();
+        if ($request->office_name) { // 办事处名称
+            $query = $query->where('cx_office.name', 'like', '%' . $request->office_name . '%');
         }
-
-        $office_ids = array_column($clock_in_list->items(), 'office_id');
-        $office_list = [];
-        if (!empty($office_ids)) {
-            $office_list = DB::table('cx_office')->whereIn('id', $office_ids)->get();
+        if ($request->dealers_name) { // 经销商名称
+            $query = $query->where('cx_dealers.dealers_name', 'like', '%' . $request->dealers_name . '%');
         }
-
-        $dealers_ids = array_column($clock_in_list->items(), 'dealers_id');
-        $dealers_list = [];
-        if (!empty($dealers_ids)) {
-            $dealers_list = DB::table('cx_dealers')->whereIn('id', $dealers_ids)->get();
+        if ($request->points) { // 售点名称
+            $query = $query->where('cx_sign.points', 'like', '%' . $request->points . '%');
+        }
+        if ($request->phone) { // 手机号码
+            $query = $query->where('cx_sign.phone', 'like', '%' . $request->phone . '%');
+        }
+        if ($request->names) { // 促销员姓名
+            $query = $query->where('cx_sign.names', 'like', '%' . $request->names . '%');
         }
 
-        foreach ($clock_in_list as &$value) {
-            // 办事处账号
-            foreach ($user_list as $v) {
-                if ($v->id == $value->user_id) {
-                    $value->user_name = $v->account ?? '';
-                }
-            }
-            foreach ($office_list as $v) {
-                if ($v->id == $value->office_id) {
-                    $value->office_name = $v->name ?? '';
-                }
-            }
-            foreach ($dealers_list as $v) {
-                if ($v->id == $value->dealers_id) {
-                    $value->dealers_name = $v->dealers_name ?? '';
-                }
-            }
-        }
+        $clock_out_list = $query->orderBy('cx_sign.id', 'DESC')->paginate(10);
 
-        return view('admin/signClockOut', ['list' => $clock_in_list, 'search_params' => $request->all()]);
+        return view('admin/signClockOut', ['list' => $clock_out_list, 'search_params' => $request->all()]);
     }
 
     // 上下班打卡列表
