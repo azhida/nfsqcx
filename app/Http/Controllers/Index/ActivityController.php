@@ -88,7 +88,15 @@ class ActivityController extends Controller
         $name = date('Ymd', time()) . rand(10000, 99999) . '.jpg';
         $base64_string = explode(',', $request->base64);
         $img = base64_decode($base64_string[1]);
-        $pic = base_path() . '/public/static/product/' . $name;
+
+        $save_path = base_path() . '/public';
+        $pic_path = '/static/product/' . date('Ym') . '/' . date('d') . '/';
+
+        $pic = $save_path . $pic_path;
+        if (!file_exists ($pic)) {
+            mkdir($pic, 0777, true);
+        }
+        $pic .= $name;
 
         if(file_put_contents($pic, $img))
         {
@@ -112,7 +120,7 @@ class ActivityController extends Controller
 
             $img->save($pic);
 
-            return $this->showJson("0000", "上传图片成功", ['url'=> '/static/product/' .$name ]);
+            return $this->showJson("0000", "上传图片成功", ['url'=> $pic_path .$name ]);
 
         }
     }
