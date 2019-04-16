@@ -35,7 +35,7 @@ class OSS {
         } catch(OssException $e) {
             return ['code' => '1', 'msg' => $e->getMessage()];
         }
-        return ['code' => '0', 'msg' => '上传成功', 'file_name' => $save_path];
+        return ['code' => '0', 'msg' => '上传成功', 'file_name' => $res['info']['url']];
     }
 
     /**
