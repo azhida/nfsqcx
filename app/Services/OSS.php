@@ -29,7 +29,7 @@ class OSS {
      */
     public function uploadFile($save_path = '', $file_name = '')
     {
-        $save_path = $save_path . '/' . date('Ymd') . '/' . md5(time() . $file_name) . '.' . $this->getExtension($file_name);
+        $save_path = $save_path . '/' . date('Y') . '/' . date('m') . '/' . date('m') . md5(time() . $file_name) . '.' . $this->getExtension($file_name);
         try{
             $res = $this->ossClient->uploadFile($this->bucket, $save_path, $file_name);
         } catch(OssException $e) {
