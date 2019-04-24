@@ -509,7 +509,8 @@ function getUploadingData(cat_id) {
 
                     var item = '<li>'
                         + '<label for="addImg1">'
-                        + '<img src="/static/' + product_list[i].img_url + '" alt="" class="product_img">'
+                        // + '<img src="/static/' + product_list[i].img_url + '" alt="" class="product_img">'
+                        + '<img src="' + product_list[i].oss_img_url + '" alt="" class="product_img">'
                         + '</label>'
                         + '<p>' + product_list[i].name + '</p>'
                         + '<input type="number" class="sales-volumes" placeholder="输入销售数量" name="product_num[]" value="0" pattern="\d*">'
