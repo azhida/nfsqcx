@@ -1,10 +1,8 @@
 <?php
 
 Route::get('/', 'Index\LoginController@login');
-Route::get('index', 'Index\LoginController@login');
 // 将 账户表 合并到 办事处表中
 Route::get('mergeAccountToOffice', 'CommonController@mergeAccountToOffice');
-Route::get('uploadProductImgToOss', 'CommonController@uploadProductImgToOss');
 Route::get('uploadSignImgToOss', 'CommonController@uploadSignImgToOss');
 
 // 删除 oss 图片

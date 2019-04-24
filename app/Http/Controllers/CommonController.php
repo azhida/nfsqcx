@@ -20,20 +20,7 @@ class CommonController extends Controller
 
         dd($saler_list);
     }
-
-    // 将产品图片上传oss
-    public function uploadProductImgToOss()
-    {
-        $product_list = DB::table('cx_product')->get();
-        $oss = new OSS();
-        foreach ($product_list as $value) {
-            $res = $oss->uploadFile('product', public_path() . '/static/' . $value->img_url);
-            if ($res && $res['code'] == 0) {
-                $oss_img_url = $res['file_name'] ?? '';
-                DB::table('cx_product')->where('id', $value->id)->update(['oss_img_url' => $oss_img_url]);
-            }
-        }
-    }
+    
 
     // 将 用户打卡上传的 图片 上传至 oss
     public function uploadSignImgToOss()
