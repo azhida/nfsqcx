@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Index;
 
+use App\Services\OSS;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
@@ -90,7 +91,7 @@ class ActivityController extends Controller
         $img = base64_decode($base64_string[1]);
 
         $save_path = base_path() . '/public';
-        $pic_path = '/static/product/' . date('Ym') . '/' . date('d') . '/';
+        $pic_path = '/static/clock_in_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
 
         $pic = $save_path . $pic_path;
         if (!file_exists ($pic)) {
@@ -181,6 +182,35 @@ class ActivityController extends Controller
             return $this->showJson('9988', '产品不存在');
         }
 
+        $imgs = [];
+        $clock_in_pics = [];
+        foreach ($request->imgs as $img) {
+
+            $img_arr = explode('|', $img);
+
+            $full_file_name = public_path() . $img_arr[1];
+
+            if ($img_arr[1] && file_exists($full_file_name)) {
+
+                $oss = new OSS();
+                $res = $oss->uploadFile('clock_in_pics', $full_file_name);
+
+                if ($res['code'] == '0') {
+
+                    $clock_in_pics['oss_img_' . $img_arr[0]] = $res['file_name'];
+                    array_push($imgs, $img_arr[0] . '|' . $res['file_name']);
+
+                } else {
+                    return $this->showJson('9999', '照片保存失败，请重试');
+                }
+
+                // 删除本地图片
+                unlink(public_path() . $img_arr[1]);
+
+            }
+
+        }
+
         $_data = [
             'dealers_id' =>$request->dealers_id,
             'office_id' =>$request->office_id,
@@ -188,14 +218,15 @@ class ActivityController extends Controller
             'activity_item_id' => $request->activity_item_id,
             'points'=>$request->salesOffice,
             'phone'=>$request->phone,
-            'img' => serialize($request->imgs),
+            'img' => serialize($imgs),
             'type' =>1,
             'create_time' => time(),
             'update_time' => time(),
             'user_id' => Session::get('user_id')
         ];
-        $_data['id'] = DB::table('cx_sign')->insertGetId($_data);
-        $result = DB::table('cx_sign_clock_in')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_in 表中
+        $_datas = array_merge($_data, $clock_in_pics);
+        $_datas['id'] = DB::table('cx_sign')->insertGetId($_datas);
+        $result = DB::table('cx_sign_clock_in')->insert($_datas); // 同步上班打卡数据 到 cx_sign_clock_in 表中
 
         return $this->showJson("0000", "打卡成功");
     }
