@@ -28,9 +28,14 @@
   <tr><td>上报手机号：</td><td>{{ $info->phone ?? '' }}</td></tr>
   <tr><td>销售姓名：</td><td>{{ $info->names ?? '' }}</td></tr>
   <tr><td>打卡时间：</td><td>{{ date('Y-m-d H:i:s', $info->create_time) }}</td></tr>
-  @foreach($info->imgs as $key => $img)
-    <tr><td>{{ $key ?? '' }}：</td><td><img src="{{ $img ?? '' }}" alt=""></td></tr>
-  @endforeach
+  <tr>
+    <td>现场促销照片：</td>
+    <td>
+      <img src="{{ $info->oss_img_1 ?? '' }}" alt="">
+      <img src="{{ $info->oss_img_2 ?? '' }}" alt="">
+      <img src="{{ $info->oss_img_3 ?? '' }}" alt="">
+    </td>
+  </tr>
   </tbody>
 </table>
 <hr>

@@ -202,24 +202,11 @@ class SignclockController extends Controller
     {
         $sign_clock_out_id = $request->sign_clock_out_id ?? 0;
 
-        $sign_clock_detail = DB::table('cx_sign_clock_out as sco')
+        $sign_clock_detail = DB::table('cx_sign as sco')
             ->join('cx_saler as s', 's.id', '=', 'sco.user_id')
             ->select('sco.*', 's.account')
             ->where('sco.id', $sign_clock_out_id)
             ->first();
-
-        $imgs = [];
-        foreach (unserialize($sign_clock_detail->img) as $img) {
-            $img_temp = explode('|', $img);
-            if ($img_temp[0] == 1) {
-                $imgs['店头照'] = $img_temp[1];
-            } elseif ($img_temp[0] == 2) {
-                $imgs['现场布建'] = $img_temp[1];
-            } elseif ($img_temp[0] == 3) {
-                $imgs['促销员照'] = $img_temp[1];
-            }
-        }
-        $sign_clock_detail->imgs = $imgs;
 
         $product_data = unserialize($sign_clock_detail->data);
         $product_ids = array_column($product_data, 'product_id');
