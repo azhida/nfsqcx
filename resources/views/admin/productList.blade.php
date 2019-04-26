@@ -85,7 +85,7 @@
         <td>{{ $value->cat_name ?? '' }}</td>
         <td>{{ $value->flavor_name ?? '' }}</td>
         <td>{{ $value->name ?? '' }}</td>
-        <td><img src="{{ $value->img_url ?? '' }}" alt=""></td>
+        <td style="text-align: center;"><img src="{{ $value->oss_img_url ?? '' }}" alt=""></td>
         <td>{{ $value->add_time }}</td>
         <td>{{ $value->update_time }}</td>
         <td class="td-manage">

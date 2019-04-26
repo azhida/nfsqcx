@@ -52,7 +52,7 @@ class ProductController extends Controller
                     $value->flavor_name = $v->name;
                 }
             }
-            $value->img_url = $this->getOssFileUrl($value->img_url);
+            $value->oss_img_url = $value->oss_img_url . '?x-oss-process=image/resize,h_100';
             $value->add_time = date('Y-m-d H:i:s', $value->create_time);
             $value->update_time = date('Y-m-d H:i:s', $value->update_time);
         }
