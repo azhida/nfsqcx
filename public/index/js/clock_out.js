@@ -347,7 +347,7 @@ function uploadBase64Img(base64, num) {
     console.log(data);
     ajax_status = false;
     $.ajax({
-        'url': '/index/activity/uploadClockInPic',
+        'url': '/index/activity/uploadClockInAndOutPic',
         'data': data,
         'method': 'post',
         'dataType': 'json',

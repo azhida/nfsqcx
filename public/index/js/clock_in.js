@@ -302,7 +302,7 @@ function uploadBase64Img(base64, num) {
     data['_token'] = $('#_token').val();
     ajax_status = false;
     $.ajax({
-        'url': '/index/activity/uploadClockInPic',
+        'url': '/index/activity/uploadClockInAndOutPic',
         'data': data,
         'method': 'post',
         'dataType': 'json',
@@ -339,7 +339,7 @@ $('#upImg').change(function (e) {
             data['base64'] = dataURL;
             ajax_status = false;
             $.ajax({
-                'url': '/index/activity/uploadClockInPic',
+                'url': '/index/activity/uploadClockInAndOutPic',
                 'data': data,
                 'method': 'post',
                 'dataType': 'json',

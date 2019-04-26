@@ -36,8 +36,8 @@ Route::group(['prefix' => 'index', 'namespace' => 'Index'], function()
         // 获取产品数据
         Route::post('activity/getUploadingData', 'ActivityController@getUploadingData');
 
-        // 上传图片
-        Route::post('activity/uploadClockInPic', 'ActivityController@uploadClockInPic');
+        // 上传打卡照片
+        Route::post('activity/uploadClockInAndOutPic', 'ActivityController@uploadClockInAndOutPic');
 
     });
 });

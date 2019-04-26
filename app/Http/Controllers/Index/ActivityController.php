@@ -73,8 +73,8 @@ class ActivityController extends Controller
     }
 
 
-    // 上传 上班打卡照片
-    public function uploadClockInPic(Request $request)
+    // 上传 上下班打卡照片
+    public function uploadClockInAndOutPic(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'base64' => 'required',
@@ -107,6 +107,7 @@ class ActivityController extends Controller
                     return $this->showJson("9999", "上传图片失败");
                 }
                 $file_name = getOssWatermark($res['file_name']);
+                unlink($pic);
 
             } else {
 
@@ -195,33 +196,10 @@ class ActivityController extends Controller
             return $this->showJson('9988', '产品不存在');
         }
 
-        $imgs = [];
         $clock_in_pics = [];
         foreach ($request->imgs as $img) {
-
             $img_arr = explode('|', $img);
-
-            $full_file_name = public_path() . $img_arr[1];
-
-            if ($img_arr[1] && file_exists($full_file_name)) {
-
-                $oss = new OSS();
-                $res = $oss->uploadFile('clock_in_pics', $full_file_name);
-
-                if ($res['code'] == '0') {
-
-                    $clock_in_pics['oss_img_' . $img_arr[0]] = $res['file_name'];
-                    array_push($imgs, $img_arr[0] . '|' . $res['file_name']);
-
-                } else {
-                    return $this->showJson('9999', '照片保存失败，请重试');
-                }
-
-                // 删除本地图片
-                unlink(public_path() . $img_arr[1]);
-
-            }
-
+            $clock_in_pics['oss_img_' . $img_arr[0]] = $img_arr[1];
         }
 
         $_data = [
@@ -231,7 +209,7 @@ class ActivityController extends Controller
             'activity_item_id' => $request->activity_item_id,
             'points'=>$request->salesOffice,
             'phone'=>$request->phone,
-            'img' => serialize($imgs),
+            'img' => serialize($request->imgs),
             'type' =>1,
             'create_time' => time(),
             'update_time' => time(),
