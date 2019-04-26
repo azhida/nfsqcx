@@ -313,6 +313,7 @@ function uploadBase64Img(base64, num) {
 
             $('.addImg' + num).hide();
             $('#list_id' + num).show().children('img').attr('src', data.data.url);
+            $('#img_' + num).val(data.data.url);
 
         },
         error: function () {
@@ -419,6 +420,9 @@ $('.clock-in').on('click','.btn',function () {
         data['salesOffice'] = salesOffice;
         data['phone'] = phone;
         data['imgs'] = imgs;
+        data['img_1'] = $('#img_1').val();
+        data['img_2'] = $('#img_2').val();
+        data['img_3'] = $('#img_3').val();
         data['_token'] = $('#_token').val();
         ajax_status = false;
         $.ajax({

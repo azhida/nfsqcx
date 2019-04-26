@@ -30,6 +30,9 @@
             <input type="hidden" id="activity_item_id" name="activity_item_id" value="">
             <input type="hidden" id="product_id" name="product_id" value="0">
             <input type="hidden" id="imgs" name="imgs" value="">
+            <input type="hidden" id="img_1" name="img_1" value="">
+            <input type="hidden" id="img_2" name="img_2" value="">
+            <input type="hidden" id="img_3" name="img_3" value="">
             <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}">
 
             <div class="weui-cells product_list">

@@ -358,6 +358,7 @@ function uploadBase64Img(base64, num) {
 
             $('.addImg' + num).hide();
             $('#list_id' + num).show().children('img').attr('src', data.data.url);
+            $('#img_' + num).val(data.data.url);
 
         },
         error: function () {

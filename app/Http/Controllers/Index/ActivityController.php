@@ -196,12 +196,6 @@ class ActivityController extends Controller
             return $this->showJson('9988', '产品不存在');
         }
 
-        $clock_in_pics = [];
-        foreach ($request->imgs as $img) {
-            $img_arr = explode('|', $img);
-            $clock_in_pics['oss_img_' . $img_arr[0]] = $img_arr[1];
-        }
-
         $_data = [
             'dealers_id' =>$request->dealers_id,
             'office_id' =>$request->office_id,
@@ -210,14 +204,16 @@ class ActivityController extends Controller
             'points'=>$request->salesOffice,
             'phone'=>$request->phone,
             'img' => serialize($request->imgs),
+            'oss_img_1' => $request->img_1,
+            'oss_img_2' => $request->img_2,
+            'oss_img_3' => $request->img_3,
             'type' =>1,
             'create_time' => time(),
             'update_time' => time(),
             'user_id' => Session::get('user_id')
         ];
-        $_datas = array_merge($_data, $clock_in_pics);
-        $_datas['id'] = DB::table('cx_sign')->insertGetId($_datas);
-        $result = DB::table('cx_sign_clock_in')->insert($_datas); // 同步上班打卡数据 到 cx_sign_clock_in 表中
+        $_data['id'] = DB::table('cx_sign')->insertGetId($_data);
+        $result = DB::table('cx_sign_clock_in')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_in 表中
 
         return $this->showJson("0000", "打卡成功");
     }
@@ -287,14 +283,17 @@ class ActivityController extends Controller
             }
         }
 
-        $clock_in_pics = [];
-        foreach ($request->imgs as $img) {
-            $img_arr = explode('|', $img);
-            $clock_in_pics['oss_img_' . $img_arr[0]] = $img_arr[1];
-        }
+        $imgs = [
+            '1|' . $request->img_1,
+            '2|' . $request->img_2,
+            '3|' . $request->img_3,
+        ];
 
         $_data = [
-            'img' => serialize($request->imgs),
+            'img' => serialize($imgs),
+            'oss_img_1' => $request->img_1,
+            'oss_img_2' => $request->img_2,
+            'oss_img_3' => $request->img_3,
             'type' => 2,
             'create_time' => time(),
             'update_time' => time(),
@@ -306,9 +305,8 @@ class ActivityController extends Controller
             'dealers_id' => $request->dealers_id,
             'points' => $request->salesOffice,
         ];
-        $_datas = array_merge($_data, $clock_in_pics);
-        $_datas['id'] = DB::table('cx_sign')->insertGetId($_datas);
-        $result = DB::table('cx_sign_clock_out')->insert($_datas); // 同步上班打卡数据 到 cx_sign_clock_out 表中
+        $_data['id'] = DB::table('cx_sign')->insertGetId($_data);
+        $result = DB::table('cx_sign_clock_out')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_out 表中
 
         return $this->showJson('0000', '今日上报数据成功');
     }
