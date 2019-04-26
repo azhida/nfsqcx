@@ -90,10 +90,9 @@ class ActivityController extends Controller
         $base64_string = explode(',', $request->base64);
         $img = base64_decode($base64_string[1]);
 
-        $save_path = base_path() . '/public';
-        $pic_path = '/static/clock_in_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        $pic_path = '/clock_in_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        $pic = public_path() . $pic_path;
 
-        $pic = $save_path . $pic_path;
         if (!file_exists ($pic)) {
             mkdir($pic, 0777, true);
         }
@@ -101,27 +100,38 @@ class ActivityController extends Controller
 
         if(file_put_contents($pic, $img))
         {
-            // create Image from file
-            $img = Image::make($pic);
+            if ($is_use_oss = 1) {
+                $oss = new OSS();
+                $res = $oss->uploadFile('clock_in_pics', $pic);
+                $file_name = getOssWatermark($res['file_name']);
 
-            // 让 水印宽度 占 图片宽度的 50%
-            $img_width = $img->width();
-            $size = $img_width / 2 / 18; // 经测试， $size =1px 时， 水印的宽度 为 18px
+            } else {
 
-            // write text at position
-            $img->text('【农夫山泉】' . date('Y-m-d H:i', time()), $img_width / 2, 0, function($font) use ($size) {
-                $font->file('./common/msyh.ttf');
+                // create Image from file
+                $img = Image::make($pic);
+
+                // 让 水印宽度 占 图片宽度的 50%
+                $img_width = $img->width();
+                $size = $img_width / 2 / 18; // 经测试， $size =1px 时， 水印的宽度 为 18px
+
+                // write text at position
+//                $img->text('【农夫山泉】' . date('Y-m-d H:i', time()), $img_width / 2, 0, function ($font) use ($size) {
+                $img->text('【农夫山泉】' . date('Y-m-d H:i:s', time()), $img_width - 10, 10, function ($font) use ($size) {
+                    $font->file('./common/msyh.ttf');
 //                $font->file(5);
-                $font->size($size);
-                $font->color('#8d8d8d');
-//                $font->align('center');
-                $font->valign('top');
+                    $font->size($size);
+                    $font->color('#8d8d8d');
+                    $font->align('right');
+                    $font->valign('top');
 //                $font->angle(45);
-            });
+                });
 
-            $img->save($pic);
+                $img->save($pic);
 
-            return $this->showJson("0000", "上传图片成功", ['url'=> $pic_path .$name ]);
+                $file_name = $pic_path .$name;
+            }
+
+            return $this->showJson("0000", "上传图片成功", ['url'=> $file_name]);
 
         }
     }
