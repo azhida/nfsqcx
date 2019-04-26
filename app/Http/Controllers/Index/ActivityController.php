@@ -90,7 +90,7 @@ class ActivityController extends Controller
         $base64_string = explode(',', $request->base64);
         $img = base64_decode($base64_string[1]);
 
-        $pic_path = '/common/clock_in_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        $pic_path = '/common/clock_in_and_out_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
         $pic = public_path() . $pic_path;
 
         if (!file_exists ($pic)) {
@@ -102,7 +102,10 @@ class ActivityController extends Controller
         {
             if ($is_use_oss = 1) {
                 $oss = new OSS();
-                $res = $oss->uploadFile('clock_in_pics', $pic);
+                $res = $oss->uploadFile('clock_in_and_out_pics', $pic);
+                if ($res['code'] == 1) {
+                    return $this->showJson("9999", "上传图片失败");
+                }
                 $file_name = getOssWatermark($res['file_name']);
 
             } else {
