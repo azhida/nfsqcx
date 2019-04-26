@@ -269,7 +269,6 @@ class ActivityController extends Controller
         $_product = $request->product_num;
         $_product_id = $request->product_id;
 
-
         foreach($_product as $key => $value) {
             if($value == '') {
                 return $this->showJson('9999', '产品数量不全');
@@ -288,10 +287,14 @@ class ActivityController extends Controller
             }
         }
 
-        $imgs = explode(',', $request->imgs);
+        $clock_in_pics = [];
+        foreach ($request->imgs as $img) {
+            $img_arr = explode('|', $img);
+            $clock_in_pics['oss_img_' . $img_arr[0]] = $img_arr[1];
+        }
 
         $_data = [
-            'img' => serialize($imgs),
+            'img' => serialize($request->imgs),
             'type' => 2,
             'create_time' => time(),
             'update_time' => time(),
@@ -303,9 +306,9 @@ class ActivityController extends Controller
             'dealers_id' => $request->dealers_id,
             'points' => $request->salesOffice,
         ];
-
-        $_data['id'] = DB::table('cx_sign')->insertGetId($_data);
-        $result = DB::table('cx_sign_clock_out')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_out 表中
+        $_datas = array_merge($_data, $clock_in_pics);
+        $_datas['id'] = DB::table('cx_sign')->insertGetId($_datas);
+        $result = DB::table('cx_sign_clock_out')->insert($_datas); // 同步上班打卡数据 到 cx_sign_clock_out 表中
 
         return $this->showJson('0000', '今日上报数据成功');
     }
