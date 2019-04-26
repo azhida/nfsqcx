@@ -90,7 +90,7 @@ class ActivityController extends Controller
         $base64_string = explode(',', $request->base64);
         $img = base64_decode($base64_string[1]);
 
-        $pic_path = '/clock_in_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        $pic_path = '/common/clock_in_pics/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
         $pic = public_path() . $pic_path;
 
         if (!file_exists ($pic)) {
