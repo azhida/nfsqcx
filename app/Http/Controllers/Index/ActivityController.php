@@ -208,12 +208,20 @@ class ActivityController extends Controller
             'oss_img_2' => $request->img_2,
             'oss_img_3' => $request->img_3,
             'type' =>1,
+            'date' => date('Y-m-d'),
             'create_time' => time(),
             'update_time' => time(),
             'user_id' => Session::get('user_id')
         ];
         $_data['id'] = DB::table('cx_sign')->insertGetId($_data);
-        $result = DB::table('cx_sign_clock_in')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_in 表中
+        DB::table('cx_sign_clock_in')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_in 表中
+        $sign_phone_insert_data = [
+            'phone' => $request->phone,
+            'date' => date('Y-m-d'),
+            'create_time' => date('Y-m-d H:i:s', time())
+        ];
+        $sign_phone_count = DB::table('cx_sign_phones')->where('phone', $request->phone)->where('date', date('Y-m-d'))->count();
+        if ($sign_phone_count == 0) DB::table('cx_sign_phones')->insert($sign_phone_insert_data);
 
         return $this->showJson("0000", "打卡成功");
     }
@@ -295,6 +303,7 @@ class ActivityController extends Controller
             'oss_img_2' => $request->img_2,
             'oss_img_3' => $request->img_3,
             'type' => 2,
+            'date' => date('Y-m-d'),
             'create_time' => time(),
             'update_time' => time(),
             'user_id' => Session::get('user_id'),
@@ -306,7 +315,14 @@ class ActivityController extends Controller
             'points' => $request->salesOffice,
         ];
         $_data['id'] = DB::table('cx_sign')->insertGetId($_data);
-        $result = DB::table('cx_sign_clock_out')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_out 表中
+        DB::table('cx_sign_clock_out')->insert($_data); // 同步上班打卡数据 到 cx_sign_clock_out 表中
+        $sign_phone_insert_data = [
+            'phone' => $request->phone,
+            'date' => date('Y-m-d'),
+            'create_time' => date('Y-m-d H:i:s', time())
+        ];
+        $sign_phone_count = DB::table('cx_sign_phones')->where('phone', $request->phone)->where('date', date('Y-m-d'))->count();
+        if ($sign_phone_count == 0) DB::table('cx_sign_phones')->insert($sign_phone_insert_data);
 
         return $this->showJson('0000', '今日上报数据成功');
     }
