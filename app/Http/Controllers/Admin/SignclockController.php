@@ -226,7 +226,7 @@ class SignclockController extends Controller
 
         $sign_clock_detail->data = $product_data;
 
-        return view('admin/signclockDetail', ['info' => $sign_clock_detail]);
+        return view('admin/signClockDetail', ['info' => $sign_clock_detail]);
     }
 
     // 获取 下班打卡的销售数据

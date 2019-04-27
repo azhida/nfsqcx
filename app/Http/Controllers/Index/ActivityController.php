@@ -210,6 +210,7 @@ class ActivityController extends Controller
             'type' =>1,
             'date' => date('Y-m-d'),
             'create_time' => time(),
+            'created_at' => date('Y-m-d H:i:s', time()),
             'update_time' => time(),
             'user_id' => Session::get('user_id')
         ];
@@ -305,6 +306,7 @@ class ActivityController extends Controller
             'type' => 2,
             'date' => date('Y-m-d'),
             'create_time' => time(),
+            'created_at' => date('Y-m-d H:i:s', time()),
             'update_time' => time(),
             'user_id' => Session::get('user_id'),
             'phone'=> $request->phone,
