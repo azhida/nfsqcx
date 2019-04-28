@@ -57,4 +57,59 @@ class CommonController extends Controller
             }
         }
     }
+
+
+    // 更新 cx_sign 打卡数据
+    public function updateSignData()
+    {
+        set_time_limit(0);
+
+        $i = 0;
+        while (true) {
+
+            $this->updateSignData_One();
+
+            $i++;
+            \Log::error('$i = ' . $i);
+            echo $i . '；' . ($i % 10 == 0 ? '<br>' : '');
+        }
+
+        dd('结束');
+    }
+    public function updateSignData_One()
+    {
+        dd('stop');
+        $max_sign_id = DB::table('cx_a')->max('sign_id') ?? 0;
+
+        $sign_list = DB::table('cx_sign')->where('id', '>', $max_sign_id)->orderBy('id', 'ASC')->limit(100)->get();
+
+        foreach ($sign_list as $value) {
+
+            $created_at = date('Y-m-d H:i:s', $value->create_time);
+            DB::table('cx_sign')->where('id', $value->id)->update(['created_at' => $created_at]);
+
+            if ($value->phone) {
+                $count = DB::table('cx_sign_phones')->where('phone', $value->phone)->where('date', date('Y-m-d', $value->create_time))->count() ?? 0;
+                if ($count == 0) {
+                    $sign_phones_insert_data = [
+                        'phone' => $value->phone,
+                        'date' => date('Y-m-d', $value->create_time),
+                        'create_time' => date('Y-m-d H:i:s', $value->create_time)
+                    ];
+                    DB::table('cx_sign_phones')->insert($sign_phones_insert_data);
+                }
+            }
+
+            DB::table('cx_a')->insert(['sign_id' => $value->id, 'add_time' => date('Y-m-d H:i:s', time())]);
+
+        }
+    }
+
+    // 删除
+    public function deleteSignData()
+    {
+        DB::table('cx_sign_clock_in')->where('type', 2)->delete();
+        DB::table('cx_sign_clock_out')->where('type', 1)->delete();
+        dd('ok');
+    }
 }

@@ -4,6 +4,8 @@ Route::get('/', 'Index\LoginController@login');
 // 将 账户表 合并到 办事处表中
 Route::get('mergeAccountToOffice', 'CommonController@mergeAccountToOffice');
 Route::get('uploadSignImgToOss', 'CommonController@uploadSignImgToOss');
+Route::get('updateSignData', 'CommonController@updateSignData');
+Route::get('deleteSignData', 'CommonController@deleteSignData');
 
 // 删除 oss 图片
 Route::post('deleteOssFile', 'Controller@deleteOssFile');
@@ -156,10 +158,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::post('activityitemDelete', 'ActivityitemController@activityitemDelete');
 
         // 打卡管理
-        Route::get('signclockinList', 'SignclockController@signclockinList'); // 上班打卡管理
-        Route::get('signclockoutList', 'SignclockController@signclockoutList'); // 下班打卡管理
-        Route::get('signclockList', 'SignclockController@signclockList'); // 上下班打卡管理（合并）
-        Route::get('signclockDetail/{sign_clock_out_id}', 'SignclockController@signclockDetail'); // 打卡详情
+        Route::get('signclockinList', 'SignclockController@signclockinList'); // 上班打卡列表
+        Route::get('signclockinDetail/{sign_clock_in_id}', 'SignclockController@signclockinDetail'); // 上班打卡详情
+        Route::get('signclockoutList', 'SignclockController@signclockoutList'); // 下班打卡列表
+        Route::get('signclockoutDetail/{sign_clock_out_id}', 'SignclockController@signclockoutDetail'); // 下班打卡详情
+        Route::get('signclockList', 'SignclockController@signclockList'); // 上下班打卡列表
+        Route::get('signclockDetail/{phone}/{date}', 'SignclockController@signclockDetail'); // 上下班打卡详情
 
 
     });
