@@ -5,9 +5,43 @@ namespace App\Http\Controllers;
 use App\Services\OSS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CommonController extends Controller
 {
+    // 导出数据到excel表
+    public function export()
+    {
+        $cellData = [
+            ['id','姓名','年龄'],
+            ['10001','张三','19'],
+            ['10002','李四','22'],
+            ['10003','王五','23'],
+            ['10004','赵六','19'],
+            ['10005','猴七','30'],
+        ];
+        $name = iconv('UTF-8', 'GBK', '成员信息');
+
+        Excel::create($name, function($excel) use ($cellData){
+            $excel->sheet('score', function($sheet) use ($cellData){
+                $sheet->rows($cellData);
+            });
+        })
+//            ->store('xls') // 将文件报错在服务器上，注意：如果要保存文件，则 文件名不要写 中文，否则报错 failed to open stream: Protocol error
+            ->export('xls');
+        
+    }
+    
+    // 导入 excel表的数据
+    public function import()
+    {
+        $filePath = 'storage/exports/'.iconv('UTF-8', 'GBK', '成员信息').'.xls';
+        Excel::load($filePath, function($reader) {
+            $data = $reader->all(); dump($data);
+        });
+        exit;
+    }
+
     // 将 账户表 合并到 办事处表中
     public function mergeAccountToOffice()
     {
