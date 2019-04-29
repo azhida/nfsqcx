@@ -379,7 +379,7 @@ class SignclockController extends Controller
                 $created_at_clock_in = $value->clock_in_list->created_at ?? ''; // 上班打卡时间
                 $created_at_clock_out = $value->clock_out_list->created_at ?? ''; // 下班打卡时间
                 $names = $value->clock_out_list->names ?? ''; // 促销员姓名
-                $phone = $value->clock_out_list->phone ?? ''; // 促销员手机号
+                $phone = $value->phone ?? ''; // 促销员手机号
 
                 $product_name = ''; // 品项（即 ： 产品）
                 $product_num = ''; // 销售数量
@@ -404,7 +404,7 @@ class SignclockController extends Controller
                     $created_at_clock_in = $value->clock_in_list->created_at ?? ''; // 上班打卡时间
                     $created_at_clock_out = $value->clock_out_list->created_at ?? ''; // 下班打卡时间
                     $names = $value->clock_out_list->names ?? ''; // 促销员姓名
-                    $phone = $value->clock_out_list->phone ?? ''; // 促销员手机号
+                    $phone = $value->phone ?? ''; // 促销员手机号
 
                     $product_name = $k; // 品项（即 ： 产品）
                     $product_num = $v; // 销售数量
