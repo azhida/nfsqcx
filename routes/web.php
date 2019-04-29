@@ -167,6 +167,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::get('signclockList', 'SignclockController@signclockList'); // 上下班打卡列表
         Route::get('signclockDetail/{phone}/{date}', 'SignclockController@signclockDetail'); // 上下班打卡详情
 
+        Route::get('exportSignClockData', 'SignclockController@exportSignClockData');
+        Route::post('exportSignClockData', 'SignclockController@exportSignClockData');
 
     });
 

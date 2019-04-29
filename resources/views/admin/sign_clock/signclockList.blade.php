@@ -35,8 +35,9 @@
     <form class="layui-form layui-col-md12 x-so" id="search_form">
       <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{ $search_params['start'] ?? '' }}">
       <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{ $search_params['end'] ?? '' }}">
-      <input type="text" name="phone"  placeholder="请输入手机号" autocomplete="off" class="layui-input" value="{{ $search_params['phone'] ?? '' }}">
+      <input type="text" name="phone"  placeholder="请输入手机号" id="phone" autocomplete="off" class="layui-input" value="{{ $search_params['phone'] ?? '' }}">
       <button class="layui-btn"  lay-submit="" lay-filter="sreach" onclick="getSetCustomPageData(1)"><i class="layui-icon">&#xe615;</i></button>
+      <button class="layui-btn" type="button" lay-filter="export" onclick="exportSignClockData()"><i class="layui-icon">导出数据</i></button>
     </form>
   </div>
   <xblock>
@@ -99,51 +100,29 @@
         });
     });
 
+    // 导出数据
+    function exportSignClockData() {
+        var start = $('#start').val();
+        var end = $('#end').val();
+        var phone = $('#phone').val();
+        $.ajax({
+            url: '{{ url('admin/exportSignClockData') }}',
+            type: 'POST',
+            data: {start: start, end: end, phone: phone, _token: '{{ csrf_token() }}'},
+            success: function (res) {
+                console.log(res);
+                if (res.code == 0) {
 
+                    layer.confirm('确认下载？', function(index){
+                        window.location.href = res.data.url;
+                        layer.close(index);
+                    });
 
-    /*用户-删除*/
-    function member_del(obj,id){
-        layer.confirm('确认要删除吗？',function(index){
-            //发异步删除数据
-            $.ajax({
-                url: '{{ url('admin/productCatDelete') }}',
-                type: 'post',
-                data: {ids: [id], _token: '{{ csrf_token() }}'},
-                success: function (res) {
-                    console.log(res);
-                    if (res.code == '0000') {
-                        $(obj).parents("tr").remove();
-                        layer.msg(res.mes, {icon:1, time:1000});
-                    } else {
-                        layer.msg(res.mes, {icon:2, time:1000});
-                    }
-                    return false;
+                } else {
+                    layer.msg(res.mes);
                 }
-            })
-        });
-    }
-
-
-
-    function delAll (argument) {
-        var data = tableCheck.getData();
-        layer.confirm('确认要删除吗？'+data,function(index){
-            //捉到所有被选中的，发异步进行删除
-            $.ajax({
-                url: '{{ url('admin/productCatDelete') }}',
-                type: 'post',
-                data: {ids: data, _token: '{{ csrf_token() }}'},
-                success: function (res) {
-                    console.log(res);
-                    if (res.code == '0000') {
-                        layer.msg('删除成功', {icon: 1});
-                        $(".layui-form-checked[data-id!=1]").not('.header').parents('tr').remove();
-                    } else {
-                        layer.msg('删除失败', {icon: 2});
-                    }
-                    return false;
-                }
-            });
+                return false;
+            }
         });
     }
 </script>

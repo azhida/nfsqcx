@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SignclockController extends Controller
 {
@@ -21,10 +22,10 @@ class SignclockController extends Controller
             ->where('sci.type', 1)
         ;
         if ($request->start) {
-            $query = $query->where('sci.created_at', '>=', $request->start);
+            $query = $query->where('sci.date', '>=', $request->start);
         }
         if ($request->end) {
-            $query = $query->where('sci.created_at', '<=', date('Y-m-d', strtotime('+1 day', strtotime($request->end))));
+            $query = $query->where('sci.date', '<=', $request->end);
         }
         if ($request->account) { // 办事处账号
             $query = $query->where('cx_saler.account', 'like', '%' . $request->account . '%');
@@ -81,10 +82,10 @@ class SignclockController extends Controller
             ->where('type', 2);
 
         if ($request->start) {
-            $query = $query->where('cx_sign_clock_out.create_time', '>=', strtotime($request->start));
+            $query = $query->where('cx_sign_clock_out.date', '>=', $request->start);
         }
         if ($request->end) {
-            $query = $query->where('cx_sign_clock_out.create_time', '<=', strtotime($request->end) + 60 * 60 * 24);
+            $query = $query->where('cx_sign_clock_out.date', '<=', $request->end);
         }
         if ($request->user_name) { // 办事处账号
             $query = $query->where('cx_saler.account', 'like', '%' . $request->user_name . '%');
@@ -148,7 +149,7 @@ class SignclockController extends Controller
 
         $query = DB::table('cx_sign_phones');
         if ($request->start) $query->where('date', '>=', $request->start);
-        if ($request->end) $query->where('date', '<=', date('Y-m-d', strtotime('+1 day', strtotime($request->end))));
+        if ($request->end) $query->where('date', '<=', $request->end);
         if ($request->phone) $query->where('phone', 'like', '%' . $request->phone . '%');
         $list = $query->orderBy('id', 'DESC')->paginate(10);
 
@@ -238,9 +239,10 @@ class SignclockController extends Controller
     }
 
     // 获取 下班打卡的销售数据
-    public function getSaleData($data)
+    public function getSaleData($data, $is_export = 0)
     {
         $sale_arr = unserialize($data);
+
         $product_ids = array_column($sale_arr, 'product_id');
 
         if (empty($product_ids)) {
@@ -259,6 +261,18 @@ class SignclockController extends Controller
             }
         }
 
+        if ($is_export == 1) {
+            // 导出数据到 excel
+            $sale_data_temp_arr = [];
+            foreach ($sale_arr as $value) {
+                if ($value['product_num'] > 0 && isset($product_list_temp[$value['product_id']])) {
+                    $sale_data_temp_arr[$product_list_temp[$value['product_id']]] = intval($value['product_num']);
+                }
+            }
+
+            return $sale_data_temp_arr;
+        }
+
         $sale_data_temp_str = '<ul>';
         foreach ($sale_arr as $value) {
             if ($value['product_num'] > 0 && isset($product_list_temp[$value['product_id']])) {
@@ -268,5 +282,157 @@ class SignclockController extends Controller
         $sale_data_temp_str .= '</ul>';
 
         return $sale_data_temp_str;
+    }
+
+    // 导出 上下班打卡数据 到 excel
+    public function exportSignClockData(Request $request)
+    {
+        if (!$request->isMethod('get')) {
+            if (!$request->start) return $this->showJson(1, '开始日必选');
+            if (!$request->end) return $this->showJson(1, '截止日必选');
+
+            $datetime_start = new \DateTime($request->start);
+            $datetime_end = new \DateTime($request->end);
+            $diff_days = $datetime_start->diff($datetime_end)->days;
+
+            if ($diff_days + 1 > 31) return $this->showJson(1, '选择时间范围不能超过31天');
+
+            // 可以导出
+            $export_key = 'export_key_' . time() . rand(10000, 999999);
+            $export_key_value = rand(10000, 999999);
+            $expiredAt = now()->addMinutes(1);
+            \Cache::put($export_key, $export_key_value, $expiredAt);
+
+            // 生成下载链接
+            $export_url = url('admin/exportSignClockData') . '?start=' . $request->start . '&end=' . $request->end . '&phone=' . $request->phone . '&export_key=' . $export_key . '&export_key_value=' . $export_key_value;
+
+            return $this->showJson(0, '可以导出数据', ['url' => $export_url]);
+
+        }
+
+        // 校验
+        $export_key_value = \Cache::get($request->export_key);
+        if ($export_key_value != $request->export_key_value) {
+            exit('非法操作');
+        } else {
+            \Cache::forget($request->export_key); // 清除验证码缓存
+        }
+
+        $query = DB::table('cx_sign_phones')->select('phone', 'date');
+        if ($request->start) $query->where('date', '>=', $request->start);
+        if ($request->end) $query->where('date', '<=', $request->end);
+        if ($request->phone) $query->where('phone', 'like', '%' . $request->phone . '%');
+        $list = $query->orderBy('id', 'DESC')->get()->toArray();
+
+        $phones = array_column($list, 'phone');
+        $dates = array_column($list, 'date');
+
+        // 上班数据
+        $sign_clock_in_list = DB::table('cx_sign_clock_in as sci')
+            ->select('sci.date', 'sci.points', 'sci.phone', 'sci.created_at', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
+            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
+            ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
+            ->join('cx_dealers', 'cx_dealers.id', '=', 'sci.dealers_id')
+            ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
+            ->join('cx_sales', 'cx_sales.id', '=', 'sci.sale_id')
+            ->whereIn('sci.phone', $phones)
+            ->whereIn('sci.date', $dates)
+            ->orderBy('sci.create_time', 'DESC')
+            ->get()->toArray();
+
+        // 下班数据
+        $sign_clock_out_list = DB::table('cx_sign_clock_out')
+            ->select('date', 'points', 'phone', 'data', 'names', 'created_at')
+            ->whereIn('phone', $phones)
+            ->whereIn('date', $dates)
+            ->orderBy('create_time', 'ASC')
+            ->get()->toArray();
+
+        foreach ($list as $value) {
+
+            foreach ($sign_clock_in_list as $v) {
+                if ($v->phone == $value->phone && $v->date == $value->date) {
+                    $value->clock_in_list = $v;
+                }
+            }
+
+            foreach ($sign_clock_out_list as $v) {
+                if ($v->phone == $value->phone && $v->date == $value->date) {
+                    $v->sale_data = $this->getSaleData($v->data, 1); // 销售数据
+                    $value->clock_out_list = $v;
+                }
+            }
+
+        }
+
+        $cellData = [];
+        $cellData[0] = ['办事处名称', '经销商名称', '销售点名称', '渠道', '品牌', '上班打卡时间', '下班打卡时间', '促销员姓名', '促销员手机号', '品项', '数量（瓶）'];
+        foreach ($list as $key => $value) {
+
+            if (empty($value->clock_out_list->sale_data)) {
+
+                $office_name = $value->clock_in_list->office_name ?? ''; // 办事处名称
+                $dealers_name = $value->clock_in_list->dealers_name ?? ''; // 经销商名称
+                $points = $value->clock_in_list->points ?? ''; // 销售点名称
+                $sale_channels_name = $value->clock_in_list->sales_name ?? ''; // 渠道
+                $activity_item_name = $value->clock_in_list->activity_item_name ?? ''; // 品牌
+                $created_at_clock_in = $value->clock_in_list->created_at ?? ''; // 上班打卡时间
+                $created_at_clock_out = $value->clock_out_list->created_at ?? ''; // 下班打卡时间
+                $names = $value->clock_out_list->names ?? ''; // 促销员姓名
+                $phone = $value->clock_out_list->phone ?? ''; // 促销员手机号
+
+                $product_name = ''; // 品项（即 ： 产品）
+                $product_num = ''; // 销售数量
+
+                $cellData_one = [
+                    $office_name, $dealers_name, $points, $sale_channels_name, $activity_item_name,
+                    $created_at_clock_in, $created_at_clock_out, $names, $phone, $product_name,
+                    $product_num
+                ];
+
+                array_push($cellData, $cellData_one);
+
+            } else {
+
+                foreach ($value->clock_out_list->sale_data as $k => $v) {
+
+                    $office_name = $value->clock_in_list->office_name ?? ''; // 办事处名称
+                    $dealers_name = $value->clock_in_list->dealers_name ?? ''; // 经销商名称
+                    $points = $value->clock_in_list->points ?? ''; // 销售点名称
+                    $sale_channels_name = $value->clock_in_list->sales_name ?? ''; // 渠道
+                    $activity_item_name = $value->clock_in_list->activity_item_name ?? ''; // 品牌
+                    $created_at_clock_in = $value->clock_in_list->created_at ?? ''; // 上班打卡时间
+                    $created_at_clock_out = $value->clock_out_list->created_at ?? ''; // 下班打卡时间
+                    $names = $value->clock_out_list->names ?? ''; // 促销员姓名
+                    $phone = $value->clock_out_list->phone ?? ''; // 促销员手机号
+
+                    $product_name = $k; // 品项（即 ： 产品）
+                    $product_num = $v; // 销售数量
+
+                    $cellData_one = [
+                        $office_name, $dealers_name, $points, $sale_channels_name, $activity_item_name,
+                        $created_at_clock_in, $created_at_clock_out, $names, $phone, $product_name,
+                        $product_num
+                    ];
+
+                    array_push($cellData, $cellData_one);
+
+                }
+
+            }
+
+        }
+
+        $name = iconv('UTF-8', 'GBK', '打卡数据【' . $request->start . ' 至 ' . $request->end . '】');
+
+        Excel::create($name, function($excel) use ($cellData, $request){
+            $excel->sheet($request->start . ' 至 ' . $request->end, function($sheet) use ($cellData){
+                $sheet->rows($cellData);
+            });
+        })
+//            ->store('xls') // 将文件报错在服务器上，注意：如果要保存文件，则 文件名不要写 中文，否则报错 failed to open stream: Protocol error
+            ->export('xls');
+
+        return $this->showJson(0, '操作成功');
     }
 }
