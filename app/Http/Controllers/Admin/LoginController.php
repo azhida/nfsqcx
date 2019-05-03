@@ -69,7 +69,7 @@ class LoginController extends Controller
 
     public function logout()
     {
-        Session::flush();
+        Session::forget('admin_id');
         return redirect('admin/login');
     }
 

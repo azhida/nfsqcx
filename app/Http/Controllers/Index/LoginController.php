@@ -55,7 +55,7 @@ class LoginController extends Controller
     // 退出登录
     public function logout()
     {
-        Session::flush(); // 移除所有项目
+        Session::forget('user_id');
 
         return redirect('index/login', 302); // 302是临时重定向，301是永久重定向
     }
