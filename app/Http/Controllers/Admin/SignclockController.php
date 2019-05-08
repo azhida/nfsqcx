@@ -176,7 +176,16 @@ class SignclockController extends Controller
         $sign_clock_in_list = $sign_clock_in_query->orderBy('sci.create_time', 'DESC')->get();
         $sign_clock_out_list = $sign_clock_out_query->orderBy('create_time', 'ASC')->get();
 
+        // 办事处列表
+        $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
+        $office_names = [];
+        foreach ($office_list as $office) {
+            $office_names[$office->id] = $office->name;
+        }
+
         foreach ($list as &$value) {
+
+            $value->office_name = $office_names[$value->office_id] ?? '';
 
             foreach ($sign_clock_in_list as $v) {
                 if ($v->phone == $value->phone && $v->date == $value->date) {
@@ -192,9 +201,6 @@ class SignclockController extends Controller
             }
 
         }
-
-        // 办事处列表
-        $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
 
         $data = [
             'list' => $list,
@@ -327,17 +333,17 @@ class SignclockController extends Controller
             \Cache::forget($request->export_key); // 清除验证码缓存
         }
 
-        $query = DB::table('cx_sign_phones')->select('phone', 'date');
+        $query = DB::table('cx_sign_phones')->select('phone', 'office_id', 'date');
         if ($request->start) $query->where('date', '>=', $request->start);
         if ($request->end) $query->where('date', '<=', $request->end);
         if ($request->phone) $query->where('phone', 'like', '%' . $request->phone . '%');
+        if ($request->office_id) $query->where('office_id', $request->office_id);
         $list = $query->orderBy('id', 'DESC')->get()->toArray();
 
         $phones = array_column($list, 'phone');
         $dates = array_column($list, 'date');
 
-        // 上班数据
-        $sign_clock_in_list = DB::table('cx_sign_clock_in as sci')
+        $sign_clock_in_query = DB::table('cx_sign_clock_in as sci')
             ->select('sci.date', 'sci.points', 'sci.phone', 'sci.created_at', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
             ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
@@ -345,19 +351,28 @@ class SignclockController extends Controller
             ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
             ->join('cx_sales', 'cx_sales.id', '=', 'sci.sale_id')
             ->whereIn('sci.phone', $phones)
-            ->whereIn('sci.date', $dates)
-            ->orderBy('sci.create_time', 'DESC')
-            ->get()->toArray();
-
-        // 下班数据
-        $sign_clock_out_list = DB::table('cx_sign_clock_out')
+            ->whereIn('sci.date', $dates);
+        $sign_clock_out_query = DB::table('cx_sign_clock_out')
             ->select('date', 'points', 'phone', 'data', 'names', 'created_at')
             ->whereIn('phone', $phones)
-            ->whereIn('date', $dates)
-            ->orderBy('create_time', 'ASC')
-            ->get()->toArray();
+            ->whereIn('date', $dates);
+        if ($request->office_id) {
+            $sign_clock_in_query->where('sci.office_id', $request->office_id);
+            $sign_clock_out_query->where('office_id', $request->office_id);
+        }
+        $sign_clock_in_list = $sign_clock_in_query->orderBy('sci.create_time', 'DESC')->get()->toArray();
+        $sign_clock_out_list = $sign_clock_out_query->orderBy('create_time', 'ASC')->get()->toArray();
+
+        // 办事处列表
+        $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
+        $office_names = [];
+        foreach ($office_list as $office) {
+            $office_names[$office->id] = $office->name;
+        }
 
         foreach ($list as $value) {
+
+            $value->office_name = $office_names[$value->office_id] ?? '';
 
             foreach ($sign_clock_in_list as $v) {
                 if ($v->phone == $value->phone && $v->date == $value->date) {
@@ -380,7 +395,7 @@ class SignclockController extends Controller
 
             if (empty($value->clock_out_list->sale_data)) {
 
-                $office_name = $value->clock_in_list->office_name ?? ''; // 办事处名称
+                $office_name = $value->office_name ?? ''; // 办事处名称
                 $dealers_name = $value->clock_in_list->dealers_name ?? ''; // 经销商名称
                 $points = $value->clock_in_list->points ?? ''; // 销售点名称
                 $sale_channels_name = $value->clock_in_list->sales_name ?? ''; // 渠道
@@ -405,7 +420,7 @@ class SignclockController extends Controller
 
                 foreach ($value->clock_out_list->sale_data as $k => $v) {
 
-                    $office_name = $value->clock_in_list->office_name ?? ''; // 办事处名称
+                    $office_name = $value->office_name ?? ''; // 办事处名称
                     $dealers_name = $value->clock_in_list->dealers_name ?? ''; // 经销商名称
                     $points = $value->clock_in_list->points ?? ''; // 销售点名称
                     $sale_channels_name = $value->clock_in_list->sales_name ?? ''; // 渠道

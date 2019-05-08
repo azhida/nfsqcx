@@ -36,7 +36,7 @@
       <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{ $search_params['start'] ?? '' }}">
       <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{ $search_params['end'] ?? '' }}">
       <div class="layui-input-inline">
-        <select name="office_id">
+        <select name="office_id" id="office_id">
           <option value="">请选择办事处</option>
           @foreach($office_list as $item)
             <option value="{{ $item->id }}" @if(($search_params['office_id'] ?? '') == $item->id) selected @endif>{{ $item->name ?? '' }}</option>
@@ -70,7 +70,7 @@
     <tbody>
     @foreach($list as $value)
       <tr>
-        <td>{{ $value->clock_in_list->office_name ?? '' }}</td>
+        <td>{{ $value->office_name ?? '' }}</td>
         <td>{{ $value->clock_in_list->dealers_name ?? '' }}</td>
         <td>{{ $value->clock_in_list->activity_item_name ?? '' }}</td>
         <td>{{ $value->clock_in_list->sales_name ?? '' }}</td>
@@ -113,10 +113,11 @@
         var start = $('#start').val();
         var end = $('#end').val();
         var phone = $('#phone').val();
+        var office_id = $('#office_id').val();
         $.ajax({
             url: '{{ url('admin/exportSignClockData') }}',
             type: 'POST',
-            data: {start: start, end: end, phone: phone, _token: '{{ csrf_token() }}'},
+            data: {start: start, end: end, phone: phone, office_id: office_id, _token: '{{ csrf_token() }}'},
             success: function (res) {
                 console.log(res);
                 if (res.code == 0) {
