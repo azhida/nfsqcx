@@ -304,13 +304,15 @@ class ActivityController extends Controller
             '3|' . $request->img_3,
         ];
 
+        // 每天上午 06:00:00 之前上报的下班数据，记录为 前一天的下班打卡记录，06:00:00 之后的下班卡，记录为当天的下班卡
+        $date = date('H:i:s', time()) < '06:00:00' ? date("Y-m-d", strtotime("-1 day")) : date('Y-m-d');
         $_data = [
             'img' => serialize($imgs),
             'oss_img_1' => $request->img_1,
             'oss_img_2' => $request->img_2,
             'oss_img_3' => $request->img_3,
             'type' => 2,
-            'date' => date('Y-m-d'),
+            'date' => $date,
             'create_time' => time(),
             'created_at' => date('Y-m-d H:i:s', time()),
             'update_time' => time(),
@@ -327,13 +329,13 @@ class ActivityController extends Controller
         $sign_phone_insert_data = [
             'phone' => $request->phone,
             'office_id' => $request->office_id,
-            'date' => date('Y-m-d'),
+            'date' => $date,
             'create_time' => date('Y-m-d H:i:s', time())
         ];
         $where = [
             'phone' => $request->phone,
             'office_id' => $request->office_id,
-            'date' => date('Y-m-d'),
+            'date' => $date,
         ];
         $sign_phone_count = DB::table('cx_sign_phones')->where($where)->count();
         if ($sign_phone_count == 0) DB::table('cx_sign_phones')->insert($sign_phone_insert_data);
