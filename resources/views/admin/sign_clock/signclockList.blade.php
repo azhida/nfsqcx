@@ -35,6 +35,14 @@
     <form class="layui-form layui-col-md12 x-so" id="search_form">
       <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{ $search_params['start'] ?? '' }}">
       <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{ $search_params['end'] ?? '' }}">
+      <div class="layui-input-inline">
+        <select name="office_id">
+          <option value="">请选择办事处</option>
+          @foreach($office_list as $item)
+            <option value="{{ $item->id }}" @if(($search_params['office_id'] ?? '') == $item->id) selected @endif>{{ $item->name ?? '' }}</option>
+          @endforeach
+        </select>
+      </div>
       <input type="text" name="phone"  placeholder="请输入手机号" id="phone" autocomplete="off" class="layui-input" value="{{ $search_params['phone'] ?? '' }}">
       <button class="layui-btn"  lay-submit="" lay-filter="sreach" onclick="getSetCustomPageData(1)"><i class="layui-icon">&#xe615;</i></button>
       <button class="layui-btn" type="button" lay-filter="export" onclick="exportSignClockData()"><i class="layui-icon">导出数据</i></button>

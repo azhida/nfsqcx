@@ -151,13 +151,13 @@ class SignclockController extends Controller
         if ($request->start) $query->where('date', '>=', $request->start);
         if ($request->end) $query->where('date', '<=', $request->end);
         if ($request->phone) $query->where('phone', 'like', '%' . $request->phone . '%');
+        if ($request->office_id) $query->where('office_id', $request->office_id);
         $list = $query->orderBy('id', 'DESC')->paginate(10);
 
         $phones = array_column($list->items(), 'phone');
         $dates = array_column($list->items(), 'date');
 
-        // 上班数据
-        $sign_clock_in_list = DB::table('cx_sign_clock_in as sci')
+        $sign_clock_in_query = DB::table('cx_sign_clock_in as sci')
             ->select('sci.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
             ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
@@ -165,16 +165,16 @@ class SignclockController extends Controller
             ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
             ->join('cx_sales', 'cx_sales.id', '=', 'sci.sale_id')
             ->whereIn('sci.phone', $phones)
-            ->whereIn('sci.date', $dates)
-            ->orderBy('sci.create_time', 'DESC')
-            ->get();
-
-        // 下班数据
-        $sign_clock_out_list = DB::table('cx_sign_clock_out')
+            ->whereIn('sci.date', $dates);
+        $sign_clock_out_query = DB::table('cx_sign_clock_out')
             ->whereIn('phone', $phones)
-            ->whereIn('date', $dates)
-            ->orderBy('create_time', 'ASC')
-            ->get();
+            ->whereIn('date', $dates);
+        if ($request->office_id) {
+            $sign_clock_in_query->where('sci.office_id', $request->office_id);
+            $sign_clock_out_query->where('office_id', $request->office_id);
+        }
+        $sign_clock_in_list = $sign_clock_in_query->orderBy('sci.create_time', 'DESC')->get();
+        $sign_clock_out_list = $sign_clock_out_query->orderBy('create_time', 'ASC')->get();
 
         foreach ($list as &$value) {
 
@@ -193,7 +193,16 @@ class SignclockController extends Controller
 
         }
 
-        return view('admin/sign_clock/signclockList', ['list' => $list, 'search_params' => $request->all()]);
+        // 办事处列表
+        $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
+
+        $data = [
+            'list' => $list,
+            'search_params' => $request->all(),
+            'office_list' => $office_list,
+        ];
+
+        return view('admin/sign_clock/signclockList', $data);
     }
 
     // 上下班打卡详情
@@ -304,7 +313,7 @@ class SignclockController extends Controller
             \Cache::put($export_key, $export_key_value, $expiredAt);
 
             // 生成下载链接
-            $export_url = url('admin/exportSignClockData') . '?start=' . $request->start . '&end=' . $request->end . '&phone=' . $request->phone . '&export_key=' . $export_key . '&export_key_value=' . $export_key_value;
+            $export_url = url('admin/exportSignClockData') . '?start=' . $request->start . '&end=' . $request->end . '&office_id=' . $request->office_id . '&phone=' . $request->phone . '&export_key=' . $export_key . '&export_key_value=' . $export_key_value;
 
             return $this->showJson(0, '可以导出数据', ['url' => $export_url]);
 
