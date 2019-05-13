@@ -240,7 +240,7 @@ class SignclockController extends Controller
             }
 
             if (!isset($value->clock_in_list) && !isset($value->clock_out_list)) {
-                DB::table('cx_sign_phones')->where('id', $value->id)->datele();
+                DB::table('cx_sign_phones')->where('id', $value->id)->delete();
                 unset($list[$key]);
             }
         }
@@ -413,7 +413,7 @@ class SignclockController extends Controller
             $office_names[$office->id] = $office->name;
         }
 
-        foreach ($list as $value) {
+        foreach ($list as $key => $value) {
 
             $value->office_name = $office_names[$value->office_id] ?? '';
 
@@ -428,6 +428,10 @@ class SignclockController extends Controller
                     $v->sale_data = $this->getSaleData($v->data, 1); // 销售数据
                     $value->clock_out_list = $v;
                 }
+            }
+
+            if (!isset($value->clock_in_list) && !isset($value->clock_out_list)) {
+                unset($list[$key]);
             }
 
         }
