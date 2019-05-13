@@ -71,6 +71,27 @@ class SignclockController extends Controller
         return view('admin/sign_clock/signclockinDetail', ['info' => $sign_clock_in_detail]);
     }
 
+    public function signclockEdit(Request $request, $id)
+    {
+        $clock_time = $request->clock_time ?? '';
+        if (!$clock_time) return $this->showJson('9999', '请选择打卡时间');
+
+        $date = date('Y-m-d', strtotime($clock_time));
+
+        $create_time = strtotime($clock_time);
+
+        $clock_type = $request->clock_type ?? '';
+
+        // 修改时间
+        DB::table('cx_sign')->where('id', $id)->update(['date' =>$date, 'created_at' => $clock_time, 'create_time' => $create_time]);
+
+        if ($clock_type == 'clock_in') {
+            DB::table('cx_sign_clock_in')->where('id', $id)->update(['date' => $date, 'created_at' => $clock_time, 'create_time' => $create_time]);
+        } else if ($clock_type == 'clock_out') {
+            DB::table('cx_sign_clock_out')->where('id', $id)->update(['date' => $date, 'created_at' => $clock_time, 'create_time' => $create_time]);
+        }
+    }
+
     // 下班打卡列表
     public function signclockoutList(Request $request)
     {

@@ -27,7 +27,21 @@
   <tr><td>用户账号：</td><td>{{ $info->account ?? '' }}</td></tr>
   <tr><td>上报手机号：</td><td>{{ $info->phone ?? '' }}</td></tr>
   <tr><td>销售姓名：</td><td>{{ $info->names ?? '' }}</td></tr>
-  <tr><td>打卡时间：</td><td>{{ date('Y-m-d H:i:s', $info->create_time) }}</td></tr>
+  <tr>
+    <td>打卡时间：</td>
+    <td>
+      {{ $info->created_at ?? '' }}
+      @if(session('admin_id') == 1)
+        <button class="layui-btn layui-btn-xs" id="sign_clock_edit">修改</button>
+        <form class="layui-form layui-col-md12 x-so" id="edit" style="display: none;margin-top: 10px;" method="post" action="{{ route('signclock.update', $info->id)  }}">
+          {{ csrf_field() }}
+          <input type="hidden" name="clock_type" value="clock_out">
+          <input class="layui-input" placeholder="打卡时间" name="clock_time" id="clock_time" value="" lay-verify="clock_time">
+          <button class="layui-btn" lay-submit="" lay-filter="edit">提交</button>
+        </form>
+      @endif
+    </td>
+  </tr>
   <tr>
     <td>现场促销照片：</td>
     <td>
@@ -52,6 +66,29 @@
 </table>
 <script>
 
+    layui.use(['laydate', 'form'], function(){
+        var laydate = layui.laydate;
+        var form = layui.form;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#clock_time' //指定元素
+            ,type: 'datetime'
+        });
+
+        form.verify({
+            clock_time: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if (!value) {
+                    return '请选择打卡时间';
+                }
+            }
+        });
+    });
+
+    $('#sign_clock_edit').click(function () {
+        $('#edit').show();
+    });
+    
 </script>
 
 </body>
