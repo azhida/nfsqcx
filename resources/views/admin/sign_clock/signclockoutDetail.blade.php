@@ -33,11 +33,11 @@
       {{ $info->created_at ?? '' }}
       @if(session('admin_id') == 1)
         <button class="layui-btn layui-btn-xs" id="sign_clock_edit">修改</button>
-        <form class="layui-form layui-col-md12 x-so" id="edit" style="display: none;margin-top: 10px;" method="post" action="{{ route('signclock.update', $info->id)  }}">
+        <form class="layui-form layui-col-md12 x-so" id="edit" style="display: none;margin-top: 10px;">
           {{ csrf_field() }}
           <input type="hidden" name="clock_type" value="clock_out">
           <input class="layui-input" placeholder="打卡时间" name="clock_time" id="clock_time" value="" lay-verify="clock_time">
-          <button class="layui-btn" lay-submit="" lay-filter="edit">提交</button>
+          <button type="button" class="layui-btn" lay-submit="" lay-filter="edit" onclick="signclockEdit('{{ route('signclock.update', $info->id) }}')">提交</button>
         </form>
       @endif
     </td>
@@ -88,6 +88,25 @@
     $('#sign_clock_edit').click(function () {
         $('#edit').show();
     });
+
+    function signclockEdit(url) {
+
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: $('#edit').serialize(),
+            success: function (res) {
+                console.log(res);
+                if (res.code == '9999') {
+                    lay.msg(res.mes);
+                } else {
+                    location.href = location.href;
+                }
+                return false;
+            }
+        });
+
+    }
     
 </script>
 

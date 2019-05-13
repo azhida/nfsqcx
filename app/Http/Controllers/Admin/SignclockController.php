@@ -90,6 +90,8 @@ class SignclockController extends Controller
         } else if ($clock_type == 'clock_out') {
             DB::table('cx_sign_clock_out')->where('id', $id)->update(['date' => $date, 'created_at' => $clock_time, 'create_time' => $create_time]);
         }
+
+        return $this->showJson('0000', '操作成功');
     }
 
     // 下班打卡列表
