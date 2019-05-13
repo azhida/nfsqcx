@@ -91,6 +91,22 @@ class SignclockController extends Controller
             DB::table('cx_sign_clock_out')->where('id', $id)->update(['date' => $date, 'created_at' => $clock_time, 'create_time' => $create_time]);
         }
 
+        // 数据保存到 cx_sign_phones
+        $sign = DB::table('cx_sign')->where('id', $id)->first();
+        $sign_phone_insert_data = [
+            'phone' => $sign->phone,
+            'office_id' => $sign->office_id,
+            'date' => $sign->date,
+            'create_time' => $sign->create_time,
+        ];
+        $where = [
+            'phone' => $sign->phone,
+            'office_id' => $sign->office_id,
+            'date' => $sign->date,
+        ];
+        $sign_phone_count = DB::table('cx_sign_phones')->where($where)->count();
+        if ($sign_phone_count == 0) DB::table('cx_sign_phones')->insert($sign_phone_insert_data);
+
         return $this->showJson('0000', '操作成功');
     }
 
@@ -206,7 +222,7 @@ class SignclockController extends Controller
             $office_names[$office->id] = $office->name;
         }
 
-        foreach ($list as &$value) {
+        foreach ($list as $key => &$value) {
 
             $value->office_name = $office_names[$value->office_id] ?? '';
 
@@ -223,6 +239,10 @@ class SignclockController extends Controller
                 }
             }
 
+            if (!isset($value->clock_in_list) && !isset($value->clock_out_list)) {
+                DB::table('cx_sign_phones')->where('id', $value->id)->datele();
+                unset($list[$key]);
+            }
         }
 
         $data = [
