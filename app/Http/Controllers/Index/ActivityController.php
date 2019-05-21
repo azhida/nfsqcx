@@ -119,8 +119,10 @@ class ActivityController extends Controller
                 $size = $img_width / 2 / 18; // 经测试， $size =1px 时， 水印的宽度 为 18px
 
                 // write text at position
+                $text = '【农夫山泉】' . date('Y-m-d H:i:s', time());
+                $text = mb_convert_encoding($text, "html-entities", "utf-8" ); // 转码 为 utf8，否则有可能出错
 //                $img->text('【农夫山泉】' . date('Y-m-d H:i', time()), $img_width / 2, 0, function ($font) use ($size) {
-                $img->text('【农夫山泉】' . date('Y-m-d H:i:s', time()), $img_width - 10, 10, function ($font) use ($size) {
+                $img->text($text, $img_width - 10, 10, function ($font) use ($size) {
                     $font->file('./common/msyh.ttf');
 //                $font->file(5);
                     $font->size($size);
