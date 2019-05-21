@@ -100,7 +100,7 @@ class ActivityController extends Controller
 
         if(file_put_contents($pic, $img))
         {
-            if ($is_use_oss = 1) {
+            if ($is_use_oss = 0) {
                 $oss = new OSS();
                 $res = $oss->uploadFile('clock_in_and_out_pics', $pic);
                 if ($res['code'] == 1) {
@@ -124,7 +124,7 @@ class ActivityController extends Controller
                     $font->file('./common/msyh.ttf');
 //                $font->file(5);
                     $font->size($size);
-                    $font->color('#8d8d8d');
+                    $font->color('#000000');
                     $font->align('right');
                     $font->valign('top');
 //                $font->angle(45);
@@ -132,7 +132,7 @@ class ActivityController extends Controller
 
                 $img->save($pic);
 
-                $file_name = $pic_path .$name;
+                $file_name = config('app.url') . $pic_path .$name;
             }
 
             return $this->showJson("0000", "上传图片成功", ['url'=> $file_name]);
