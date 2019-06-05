@@ -479,6 +479,8 @@ function getFlavorList() {
                         $('.tea').append('<ul class="upladingData-list flavor_id_' + data[i].id + '"></ul>');
                     } else if (data[i].cat_id == 4) {
                         $('.fruit_juice').append('<ul class="upladingData-list flavor_id_' + data[i].id + '"></ul>');
+                    } else if (data[i].cat_id == 5) {
+                        $('.milk').append('<ul class="upladingData-list flavor_id_' + data[i].id + '"></ul>');
                     }
                 }
 

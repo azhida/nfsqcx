@@ -75,6 +75,17 @@
                 <div class="product_list_son fruit_juice">
                     <!--<ul class="upladingData-list" id="fruit_juice_list"></ul>-->
                 </div>
+
+                <a class="weui-cell weui-cell_access" href="javascript:;" cat_id="5">
+                    <div class="weui-cell__hd"><img src="{{ asset('index/imgs/fruit_juice.png') }}"></div>
+                    <div class="weui-cell__bd"><p>奶系列</p></div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a>
+                <div class="product_list_son milk">
+                    <!--<ul class="upladingData-list" id="fruit_juice_list"></ul>-->
+                </div>
+
             </div>
 
             <div class="weui-cells select_list">
