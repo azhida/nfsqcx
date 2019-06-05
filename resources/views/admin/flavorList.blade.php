@@ -23,7 +23,7 @@
 <div class="x-nav">
   <span class="layui-breadcrumb">
     <a href="">首页</a>
-    <a href="">产品口味管理</a>
+    <a href="#">产品口味管理</a>
     <a><cite>产品口味列表</cite></a>
   </span>
   <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
@@ -36,7 +36,7 @@
       <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{ $search_params['start'] ?? '' }}">
       <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{ $search_params['end'] ?? '' }}">
       <div class="layui-input-inline">
-        <select name="office_id">
+        <select name="cat_id">
           <option value="">请选择分类</option>
           @foreach($cat_list as $item)
             <option value="{{ $item->id }}" @if(($search_params['cat_id'] ?? '') == $item->id) selected @endif>{{ $item->name ?? '' }}</option>
