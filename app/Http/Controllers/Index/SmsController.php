@@ -15,9 +15,10 @@ class SmsController extends Controller
     public function send(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required',
+            'phone' => 'required|regex:/^1[3456789][0-9]{9}$/',
         ], [
             'phone.required' => '手机号码缺失',
+            'phone.regex' => '手机号码格式错误',
         ]);
 
         if ($validator->fails()) {
