@@ -253,6 +253,9 @@ class ActivityController extends Controller
     // 保存下班打卡数据
     public function saveClockOutData(Request $request)
     {
+        \Log::error('下班打卡数据：' . json_encode($request->all(), JSON_UNESCAPED_UNICODE));
+        \Log::error('当日销量是否已填写：' . (empty($request->product_nums) ? '当日销量未填写' : '当日销量已填写'));
+
         $validator = Validator::make($request->all(), [
             'office_id' => 'required|numeric',
             'dealers_id' => 'required|numeric',
@@ -280,7 +283,7 @@ class ActivityController extends Controller
         }
 
         $sale_data = [];
-        $product_nums = $_product = $request->product_nums;
+        $product_nums = $request->product_nums;
         if (empty($product_nums)) return $this->showJson('9999', '当日销量未填写');
 
         foreach ($product_nums as $product_id => $product_num) {

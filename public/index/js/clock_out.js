@@ -124,8 +124,8 @@ function showProductList() {
 
     $('#word_in header a').attr('href', 'javascript:void(0)').attr('onclick', 'saveSaleData()');
 
-    // 获取 水系列 产品列表(需要用户主动点击今日销量 才会获取数据，以此判断用户是否填写了销售数据)
-    getUploadingData(1);
+    // 需要用户主动点击 今日销量 ，以此判断用户是否填写了销售数据，未点击，则提示
+    $('#sale_data_select').text('点击修改').attr('is_write', 1);
 
     return false;
 }
@@ -381,6 +381,7 @@ function postClockOutData() {
     var product_id = $('#product_id').val();
     var activity_item_id = $('#activity_item_id').val();
     var salesOffice = $('#salesOffice').val();
+
     if($.trim( office_id).length == 0) {
         $.toptip('请选择办事处', 'warning');
         return false;
@@ -392,6 +393,12 @@ function postClockOutData() {
     if($.trim( salesOffice).length == 0) {
         $.toptip('请填写销售点', 'warning');
         $('#salesOffice').focus();
+        return false;
+    }
+
+    var sale_data_is_write = $('#sale_data_select').attr('is_write');
+    if (sale_data_is_write != 1) {
+        $.alert('请先填写当日销量');
         return false;
     }
     if($.trim( sale_id).length == 0) {
@@ -442,8 +449,7 @@ $(function () {
     getFlavorList();
 
     // 获取 水系列 产品列表
-    // 注释的目的：不主动获取，需要用户主动点击才会获取数据，以此判断用户是否填写了销售数据
-    // getUploadingData(1);
+    getUploadingData(1);
 
     // 点击展开 产品列表
     $('.product_list .weui-cell_access').click(function () {
@@ -546,6 +552,13 @@ function getUploadingData(cat_id) {
 
 // 获取短信验证码
 function getCode() {
+
+    var sale_data_is_write = $('#sale_data_select').attr('is_write');
+    if (sale_data_is_write != 1) {
+        $.alert('请先填写当日销量');
+        return false;
+    }
+
     var val = $('#phone').val();
     var ajax_status = true;
     if(ajax_status) {

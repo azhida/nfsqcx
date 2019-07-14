@@ -123,7 +123,7 @@
                     <div class="weui-cell__bd">
                         <p>当日销量</p>
                     </div>
-                    <div class="weui-cell__ft">
+                    <div class="weui-cell__ft" id="sale_data_select" is_write="0">
                         请填写
                     </div>
                 </a>
