@@ -278,26 +278,24 @@ class ActivityController extends Controller
         if(Cache::get($request->phone) != $request->code) {
             return $this->showJson('9999', '验证失败');
         }
+        
         $sale_data = [];
-        $_product = $request->product_num;
-        $_product_id = $request->product_id;
+        $product_nums = $_product = $request->product_nums;
+        if (empty($product_nums)) return $this->showJson('9999', '产品数量不全');
 
-        foreach($_product as $key => $value) {
-            if($value == '') {
-                return $this->showJson('9999', '产品数量不全');
-            }
-            if($value < 0) {
+        foreach ($product_nums as $product_id => $product_num) {
+
+            if($product_num < 0) {
                 return $this->showJson('9999', '销量应大于0');
             }
-            if ($key == 0) {
-                $sale_data['data'][$key]['product_id'] = $_product_id[$key];
-                $sale_data['data'][$key]['product_num'] = $value;
-            } else {
-                if ($value > 0) {
-                    $sale_data['data'][$key]['product_id'] = $_product_id[$key];
-                    $sale_data['data'][$key]['product_num'] = $value;
-                }
+
+            if ($product_num > 0) {
+                array_push($sale_data, [
+                    'product_id' => $product_id,
+                    'product_num' => $product_num,
+                ]);
             }
+
         }
 
         $imgs = [
@@ -321,7 +319,7 @@ class ActivityController extends Controller
             'user_id' => Session::get('user_id'),
             'phone'=> $request->phone,
             'names'=> $request->names,
-            'data' => serialize($sale_data['data']),
+            'data' => serialize($sale_data),
             'office_id' => $request->office_id,
             'dealers_id' => $request->dealers_id,
             'points' => $request->salesOffice,

@@ -423,6 +423,7 @@ function postClockOutData() {
                 } else {
                     $.alert(data.mes);
                 }
+                return false;
             },
             error: function () {
                 $.alert('网络较慢，请检查后重试');
@@ -438,7 +439,8 @@ $(function () {
     getFlavorList();
 
     // 获取 水系列 产品列表
-    getUploadingData(1);
+    // 注释的目的：不主动获取，需要用户主动点击才会获取数据，以此判断用户是否填写了销售数据
+    // getUploadingData(1);
 
     // 点击展开 产品列表
     $('.product_list .weui-cell_access').click(function () {
@@ -516,8 +518,7 @@ function getUploadingData(cat_id) {
                         + '<img src="' + product_list[i].oss_img_url + '" alt="" class="product_img">'
                         + '</label>'
                         + '<p>' + product_list[i].name + '</p>'
-                        + '<input type="number" class="sales-volumes" placeholder="输入销售数量" name="product_num[]" value="0" pattern="\d*">'
-                        + '<input type="hidden" name="product_id[]" class="upInput" id="addImg' + product_list[i].id + '" value="' + product_list[i].id + '"/>'
+                        + '<input style="text-align: right;" class="weui-input" type="number" pattern="[0-9]*" placeholder="0" name="product_nums[' + product_list[i].id + ']">'
                         + '</li>';
 
                     // 按口味分类
