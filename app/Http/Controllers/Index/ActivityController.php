@@ -281,7 +281,7 @@ class ActivityController extends Controller
 
         $sale_data = [];
         $product_nums = $_product = $request->product_nums;
-        if (empty($product_nums)) return $this->showJson('9999', '产品数量不全');
+        if (empty($product_nums)) return $this->showJson('9999', '当日销量未填写');
 
         foreach ($product_nums as $product_id => $product_num) {
 
@@ -289,7 +289,7 @@ class ActivityController extends Controller
                 return $this->showJson('9999', '销量应大于0');
             }
 
-            if (intval($product_num) > 0) {
+            if (intval($product_num) != '') {
                 array_push($sale_data, [
                     'product_id' => $product_id,
                     'product_num' => intval($product_num),
