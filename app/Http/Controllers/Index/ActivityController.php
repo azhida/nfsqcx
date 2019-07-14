@@ -285,26 +285,45 @@ class ActivityController extends Controller
                 return $this->showJson('9999', '验证失败');
             }
         }
-        
+
         $sale_data = [];
         $product_nums = $request->product_nums;
-        if (empty($product_nums)) return $this->showJson('9999', '当日销量未填写');
+//        if (empty($product_nums)) return $this->showJson('9999', '当日销量未填写');
+        if (!empty($product_nums)) {
 
-        foreach ($product_nums as $product_id => $product_num) {
+            foreach ($product_nums as $product_id => $product_num) {
 
-            if($product_num < 0) {
-                return $this->showJson('9999', '销量应大于0');
+                if($product_num < 0) {
+                    return $this->showJson('9999', '销量应大于0');
+                }
+
+                if (intval($product_num) > 0) {
+                    array_push($sale_data, [
+                        'product_id' => $product_id,
+                        'product_num' => intval($product_num),
+                    ]);
+                }
+
             }
 
-            if (intval($product_num) > 0) {
-                array_push($sale_data, [
-                    'product_id' => $product_id,
-                    'product_num' => intval($product_num),
-                ]);
+        } else {
+
+            $product_ids = $request->product_id;
+            $product_nums = $request->product_num;
+            foreach ($product_ids as $key => $product_id) {
+
+                $product_num = $product_nums[$key];
+
+                if (intval($product_num) > 0) {
+                    array_push($sale_data, [
+                        'product_id' => $product_id,
+                        'product_num' => intval($product_num),
+                    ]);
+                }
             }
 
         }
-
+        
         $imgs = [
             '1|' . $request->img_1,
             '2|' . $request->img_2,
