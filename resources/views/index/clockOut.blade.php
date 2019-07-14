@@ -77,7 +77,7 @@
                 </div>
 
                 <a class="weui-cell weui-cell_access" href="javascript:;" cat_id="5">
-                    <div class="weui-cell__hd"><img src="{{ asset('index/imgs/fruit_juice.png') }}"></div>
+                    <div class="weui-cell__hd"><img src="{{ asset('index/imgs/milk.png') }}"></div>
                     <div class="weui-cell__bd"><p>奶系列</p></div>
                     <div class="weui-cell__ft">
                     </div>
