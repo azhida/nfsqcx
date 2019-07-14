@@ -158,7 +158,7 @@
                         <input class="weui-input" type="number" name="code" placeholder="请输入验证码" id="code" pattern="\d*">
                     </div>
                     <div class="weui-cell__ft">
-                        <button class="weui-vcode-btn" id="get-code" type="button" onclick="getCode();">获取验证码</button>
+                        <button class="weui-btn weui-btn_warn" id="get-code" type="button" onclick="getCode();">获取验证码</button>
                     </div>
                 </div>
             </div>

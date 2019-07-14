@@ -579,10 +579,12 @@ function getCode() {
 function countTime(s) {
     if (s == 0){
         $('#get-code').text('获取验证码');
+        $('#get-code').addClass('weui-btn_warn').attr('disabled', false);
         return;
     }
     s--;
     $('#get-code').text(s + '秒后重新获取');
+    $('#get-code').removeClass('weui-btn_warn').attr('disabled', true);
     setTimeout(function () {
         countTime(s)
     },1000)
