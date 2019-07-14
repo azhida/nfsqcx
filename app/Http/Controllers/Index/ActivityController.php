@@ -278,10 +278,14 @@ class ActivityController extends Controller
             return $this->showJson('9999', $validator->errors()->first());
         }
 
-        if(Cache::get($request->phone) != $request->code) {
-            return $this->showJson('9999', '验证失败');
+        // 是否是 不需要验证的手机号码
+        $is_no_verify_phone = DB::table('cx_no_verify_phones')->where('phone', $request->phone)->first();
+        if (!$is_no_verify_phone) {
+            if(Cache::get($request->phone) != $request->code) {
+                return $this->showJson('9999', '验证失败');
+            }
         }
-
+        
         $sale_data = [];
         $product_nums = $request->product_nums;
         if (empty($product_nums)) return $this->showJson('9999', '当日销量未填写');
