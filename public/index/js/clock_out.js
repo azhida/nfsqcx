@@ -124,6 +124,9 @@ function showProductList() {
 
     $('#word_in header a').attr('href', 'javascript:void(0)').attr('onclick', 'saveSaleData()');
 
+    // 获取 水系列 产品列表(需要用户主动点击今日销量 才会获取数据，以此判断用户是否填写了销售数据)
+    getUploadingData(1);
+
     return false;
 }
 

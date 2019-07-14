@@ -289,7 +289,7 @@ class ActivityController extends Controller
                 return $this->showJson('9999', '销量应大于0');
             }
 
-            if (intval($product_num) != '') {
+            if (intval($product_num) > 0) {
                 array_push($sale_data, [
                     'product_id' => $product_id,
                     'product_num' => intval($product_num),
