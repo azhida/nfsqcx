@@ -26,12 +26,11 @@ class SmsController extends Controller
         }
 
         $sms = new QcloudSms();
-        $res = $sms->send($request->phone);
+        $res = $sms->send($request->phone, $request->sms_type ?? 1);
         if ($res['code'] == 0) {
-            DB::table('cx_sms_code')->insert(['phone' => $request->phone, 'code' => $res['sms_code'], 'type' => $request->sms_type ?? 1, 'create_time' => time()]);
             return $this->showJson("0000", "发送短信成功" . $res['sms_code']);
         } else {
-            return $this->showJson("9999", "发送短信失败");
+            return $this->showJson("9999", $res['msg']);
         }
     }
 
