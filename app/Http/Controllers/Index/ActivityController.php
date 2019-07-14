@@ -278,7 +278,7 @@ class ActivityController extends Controller
         if(Cache::get($request->phone) != $request->code) {
             return $this->showJson('9999', '验证失败');
         }
-        
+
         $sale_data = [];
         $product_nums = $_product = $request->product_nums;
         if (empty($product_nums)) return $this->showJson('9999', '产品数量不全');
@@ -289,10 +289,10 @@ class ActivityController extends Controller
                 return $this->showJson('9999', '销量应大于0');
             }
 
-            if ($product_num > 0) {
+            if (intval($product_num) > 0) {
                 array_push($sale_data, [
                     'product_id' => $product_id,
-                    'product_num' => $product_num,
+                    'product_num' => intval($product_num),
                 ]);
             }
 
