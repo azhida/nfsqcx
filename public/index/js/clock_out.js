@@ -343,7 +343,7 @@ function changeAddImg(e, num) {
 }
 
 function uploadBase64Img(base64, num) {
-    $.showLoading();
+    $.showLoading('图片上传中...');
     var data = {};
     data['base64'] = base64;
     data['_token'] = $('#_token').val();
@@ -414,7 +414,7 @@ function postClockOutData() {
         return false;
     }
     if(ajax_status) {
-        $.showLoading();
+        $.showLoading('数据保存中...');
 
         $('#imgs').val(imgs);
 

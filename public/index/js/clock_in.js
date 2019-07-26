@@ -296,7 +296,7 @@ function changeAddImg(e, num) {
 }
 
 function uploadBase64Img(base64, num) {
-    $.showLoading();
+    $.showLoading('图片上传中...');
     var data = {};
     data['base64'] = base64;
     data['_token'] = $('#_token').val();
@@ -335,7 +335,7 @@ $('#upImg').change(function (e) {
         // 下面逻辑处理
         var ajax_status = true;
         if(ajax_status) {
-            $.showLoading();
+            $.showLoading('图片上传中...');
             var data = {};
             data['base64'] = dataURL;
             ajax_status = false;
@@ -410,7 +410,7 @@ $('.clock-in').on('click','.btn',function () {
         return false;
     }
     if(ajax_status) {
-        $.showLoading();
+        $.showLoading('数据保存中...');
         var data = {};
         data['office_id'] = office_id;
         data['dealers_id'] = dealers_id;
