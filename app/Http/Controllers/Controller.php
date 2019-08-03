@@ -56,4 +56,13 @@ class Controller extends BaseController
         return 'http://' . env('OSS_BUCKET') . '.' . env('OSS_ENDPOINT') . '/' . $file_name;
     }
 
+    // 获取 oss 的纯文件名（ 不含 域名 和 参数 ）
+    public function getOssFileName($full_file_name = '')
+    {
+        if (!$full_file_name) return '';
+        $res_1 = explode(env('OSS_ENDPOINT') . '/', $full_file_name);
+        $res_2 = explode('?', $res_1[1]);
+        return $res_2[0];
+    }
+
 }

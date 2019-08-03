@@ -4,6 +4,7 @@ Route::get('/', 'Index\LoginController@login');
 // 将 账户表 合并到 办事处表中
 Route::get('mergeAccountToOffice', 'CommonController@mergeAccountToOffice');
 Route::get('uploadSignImgToOss', 'CommonController@uploadSignImgToOss');
+Route::get('downloadSignImgFromOss', 'CommonController@downloadSignImgFromOss');
 Route::get('updateSignData', 'CommonController@updateSignData');
 Route::get('deleteSignData', 'CommonController@deleteSignData');
 Route::get('excel/export','CommonController@export');

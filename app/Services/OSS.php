@@ -53,6 +53,41 @@ class OSS {
         return ['code' => '0', 'msg' => '删除成功'];
     }
 
+    /**
+     * 下载文件
+     * @param string $object oss上的文件名称，表示您在下载文件时需要指定的文件名称，如abc/efg/123.jpg。
+     * @param string $localfile 指定下载到本地的文件路径（指定下载到本地的文件名称）
+     */
+    public function downloadFile($object = '', $localfile = '')
+    {
+        if (!$object || !$localfile) return ['code' => 1, 'msg' => '文件下载失败'];
+
+        $localfile_array = explode('/', $localfile);
+
+        array_pop($localfile_array); // 去掉数组最后一个元素
+
+        $save_path = join('/', $localfile_array); // 重新拼装 保存路径
+        if ($localfile_array[0] != 'common') {
+            $save_path = 'common/' . $save_path;
+            $localfile = 'common/' . $localfile;
+        }
+
+        if (!is_dir($save_path)) { // 不存在则创建
+            mkdir($save_path, 0777, true);
+        }
+
+        $options = array(
+            OssClient::OSS_FILE_DOWNLOAD => $localfile
+        );
+
+        try{
+            $this->ossClient->getObject($this->bucket, $object, $options);
+        } catch(OssException $e) {
+            return ['code' => '1', 'msg' => $e->getMessage()];
+        }
+        return ['code' => '0', 'msg' => '文件下载成功', 'file_url' => config('app.url') . '/' . $localfile];
+    }
+
     // 获取文件扩展名
     public function getExtension($file_name)
     {

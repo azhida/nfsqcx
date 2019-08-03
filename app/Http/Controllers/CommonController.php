@@ -92,6 +92,25 @@ class CommonController extends Controller
         }
     }
 
+    // 从 oss 下载图片
+    public function downloadSignImgFromOss(Request $request)
+    {
+//        $file_name = 'http://nfsqcx.oss-cn-hangzhou.aliyuncs.com/clock_in_and_out_pics/2019/05/05c98076dd14d32391a83c3f3f56adadad.jpg?x-oss-process=image/resize,w_500/watermark,text_44CQ5Yac5aSr5bGx5rOJ44CRMjAxOS0wNS0wMyAxMTo0MA,g_ne,size_13';
+
+        $file_name = $request->file_name ?? '';
+
+        if (!$file_name) {
+            return $this->showJson(1, '参数错误');
+        }
+
+        $object = $this->getOssFileName($file_name);
+
+        $oss = new OSS();
+        $res = $oss->downloadFile($object, $object);
+
+        return $this->showJson($res['code'], $res['msg']);
+    }
+
 
     // 更新 cx_sign 打卡数据
     public function updateSignData()
