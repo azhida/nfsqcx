@@ -126,6 +126,43 @@ class CommonController extends Controller
         }
     }
 
+    // 请求下载外部文件到本地服务器
+    public function downloadFileToLocal(Request $request)
+    {
+//        $file_name = 'common/clock_in_and_out_pics/2019/06/07/20190607925531.jpg';
+
+        $file_name = $request->file_name ?? '';
+
+        if (!$file_name) return $this->showJson(1, '参数错误');
+
+        $url = 'http://nfsqcx.weilh.vip/downloadFileFromLocal?file_name=' . $file_name;
+
+        $file_name_array = explode('/', $file_name);
+
+        array_pop($file_name_array);
+
+        $save_path = join('/', $file_name_array);
+
+        if (!is_dir(public_path($save_path))) {
+            mkdir($save_path, 0777, true);
+        }
+
+        $client = new \GuzzleHttp\Client(['verify' => false]);  // 忽略SSL错误
+        $response = $client->get($url, ['save_to' => public_path($file_name)]);  // 保存远程url到文件
+
+        if ($response->getStatusCode() == 200) {
+
+            $file_url = config('app.url') . '/' . $file_name;
+            return $this->showJson(0, '下载成功', ['file_url' => $file_url]);
+
+        } else {
+
+            return $this->showJson(1, '下载失败');
+
+        }
+
+    }
+
 
     // 更新 cx_sign 打卡数据
     public function updateSignData()
