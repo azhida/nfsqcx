@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\OSS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CommonController extends Controller
@@ -109,6 +110,20 @@ class CommonController extends Controller
         $res = $oss->downloadFile($object, $object);
 
         return $this->showJson($res['code'], $res['msg']);
+    }
+
+    // 此方法 供外部下载文件
+    public function downloadFileFromLocal(Request $request)
+    {
+//        $file_name = 'common\clock_in_and_out_pics\2019\05\05c98076dd14d32391a83c3f3f56adadad.jpg';
+
+        $file_name = $request->file_name ?? '';
+
+        if (File::exists($file_name)) {
+            return response()->download($file_name);
+        } else {
+            return $this->showJson(1, '文件不存在');
+        }
     }
 
 

@@ -5,6 +5,7 @@ Route::get('/', 'Index\LoginController@login');
 Route::get('mergeAccountToOffice', 'CommonController@mergeAccountToOffice');
 Route::get('uploadSignImgToOss', 'CommonController@uploadSignImgToOss');
 Route::get('downloadSignImgFromOss', 'CommonController@downloadSignImgFromOss');
+Route::any('downloadFileFromLocal', 'CommonController@downloadFileFromLocal');
 Route::get('updateSignData', 'CommonController@updateSignData');
 Route::get('deleteSignData', 'CommonController@deleteSignData');
 Route::get('excel/export','CommonController@export');
