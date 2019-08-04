@@ -55,7 +55,6 @@ class CommonController extends Controller
 
         dd($saler_list);
     }
-    
 
     // 将 用户打卡上传的 图片 上传至 oss
     public function uploadSignImgToOss()
@@ -93,7 +92,7 @@ class CommonController extends Controller
         }
     }
 
-    // 从 oss 下载图片
+    // 从 oss 下载打卡图片
     public function downloadSignImgFromOss(Request $request)
     {
 //        $file_name = 'http://nfsqcx.oss-cn-hangzhou.aliyuncs.com/clock_in_and_out_pics/2019/05/05c98076dd14d32391a83c3f3f56adadad.jpg?x-oss-process=image/resize,w_500/watermark,text_44CQ5Yac5aSr5bGx5rOJ44CRMjAxOS0wNS0wMyAxMTo0MA,g_ne,size_13';
@@ -109,7 +108,27 @@ class CommonController extends Controller
         $oss = new OSS();
         $res = $oss->downloadFile($object, $object);
 
-        return $this->showJson($res['code'], $res['msg']);
+        return $this->showJson($res['code'], $res['msg'], ['file_url' => $res['file_url'] ?? '']);
+    }
+
+    // 从 oss 下载产品图片
+    public function downloadProductImgFromOss()
+    {
+        $product_list = DB::table('cx_product')->where('id', 71)->get();
+
+        foreach ($product_list as $product) {
+
+            $object = $this->getOssFileName($product->oss_img_url);
+
+            $oss = new OSS();
+            $res = $oss->downloadFile($object, $object);
+
+            if ($res['code'] == 0) {
+                DB::table('cx_product')->where('id', $product->id)->update(['img_url' => $res['file_name']]);
+            }
+
+        }
+
     }
 
     // 此方法 供外部下载文件
@@ -217,4 +236,5 @@ class CommonController extends Controller
         DB::table('cx_sign_clock_out')->where('type', 1)->delete();
         dd('ok');
     }
+
 }

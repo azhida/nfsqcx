@@ -85,7 +85,7 @@ class OSS {
         } catch(OssException $e) {
             return ['code' => '1', 'msg' => $e->getMessage()];
         }
-        return ['code' => '0', 'msg' => '文件下载成功', 'file_url' => config('app.url') . '/' . $localfile];
+        return ['code' => '0', 'msg' => '文件下载成功', 'file_url' => config('app.url') . '/' . $localfile, 'file_name' => '/' . $localfile];
     }
 
     // 获取文件扩展名
