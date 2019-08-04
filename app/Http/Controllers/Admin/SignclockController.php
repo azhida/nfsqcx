@@ -502,7 +502,7 @@ class SignclockController extends Controller
             });
         })
 //            ->store('xls') // 将文件报错在服务器上，注意：如果要保存文件，则 文件名不要写 中文，否则报错 failed to open stream: Protocol error
-            ->export('xls');
+            ->export('xlsx');
 
         return $this->showJson(0, '操作成功');
     }
