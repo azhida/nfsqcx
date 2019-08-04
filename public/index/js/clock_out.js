@@ -523,8 +523,8 @@ function getUploadingData(cat_id) {
 
                     var item = '<li>'
                         + '<label for="addImg1">'
-                        // + '<img src="/static/' + product_list[i].img_url + '" alt="" class="product_img">'
-                        + '<img src="' + product_list[i].oss_img_url + '" alt="" class="product_img">'
+                        + '<img src="' + product_list[i].img_url + '" alt="" class="product_img">'
+                        // + '<img src="' + product_list[i].oss_img_url + '" alt="" class="product_img">'
                         + '</label>'
                         + '<p>' + product_list[i].name + '</p>'
                         + '<input style="text-align: right;" class="weui-input" type="number" pattern="[0-9]*" placeholder="0" name="product_nums[' + product_list[i].id + ']">'
