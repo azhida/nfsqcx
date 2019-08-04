@@ -114,7 +114,7 @@ class CommonController extends Controller
     // 从 oss 下载产品图片
     public function downloadProductImgFromOss()
     {
-        $product_list = DB::table('cx_product')->where('id', 71)->get();
+        $product_list = DB::table('cx_product')->get();
 
         foreach ($product_list as $product) {
 
@@ -128,6 +128,8 @@ class CommonController extends Controller
             }
 
         }
+
+        dd('下载完成');
 
     }
 
