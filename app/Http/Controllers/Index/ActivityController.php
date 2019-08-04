@@ -134,7 +134,8 @@ class ActivityController extends Controller
 
                 $img->save($pic);
 
-                $file_name = config('app.url') . $pic_path .$name;
+//                $file_name = config('app.url') . $pic_path .$name;
+                $file_name = $pic_path .$name;
             }
 
             return $this->showJson("0000", "上传图片成功", ['url'=> $file_name]);
