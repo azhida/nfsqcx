@@ -368,6 +368,8 @@ class SignclockController extends Controller
 
         }
 
+        set_time_limit(0);
+
         // 校验
         $export_key_value = \Cache::get($request->export_key);
         if ($export_key_value != $request->export_key_value) {
