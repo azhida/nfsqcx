@@ -175,6 +175,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
         Route::get('exportSignClockData', 'SignclockController@exportSignClockData');
         Route::post('exportSignClockData', 'SignclockController@exportSignClockData');
 
+        Route::get('smsCodeList', 'SmsCodesController@index');
+
+
     });
 
 
