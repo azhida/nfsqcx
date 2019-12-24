@@ -19,7 +19,7 @@ class LoginController extends Controller
     {
         if ($request->isMethod('get')) {
 
-            if(Session::has('user_id')) { // 已登录
+            if(Session::has('office_id')) { // 已登录
                 return view('index/index');
             } else { // 未登录
                 return view('index/login');
