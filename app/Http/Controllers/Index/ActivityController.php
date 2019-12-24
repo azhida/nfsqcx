@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Index;
 
+use App\Models\Office;
 use App\Services\OSS;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,14 +17,10 @@ class ActivityController extends Controller
     public function clockIn(Request $request)
     {
         if ($request->isMethod('get')) {
-            $user_id = Session::get('user_id');
-            $office_info = DB::table('cx_office as o')
-                ->join('cx_saler as s', 's.office_id', '=', 'o.id')
-                ->where('s.id', $user_id)
-                ->select('o.*')
-                ->first();
-
-            return view('index/clockIn', ['office_info' => $office_info]);
+            $office_id = Session::get('office_id');
+            $office_info = Office::query()->find($office_id);
+            $phone = Session::get('phone');
+            return view('index/clockIn', ['office_info' => $office_info, 'phone' => $phone]);
         }
     }
 

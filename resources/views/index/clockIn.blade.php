@@ -46,7 +46,7 @@
                 <p>经销商</p>
             </div>
             <div class="weui-cell__ft dealers_text">
-                请选择
+                <input style="text-align: right;" class="weui-input" type="text" name="dealer" id="dealer" value="" placeholder="请选择">
             </div>
         </a>
 
@@ -56,7 +56,7 @@
                 <p>售点</p>
             </div>
             <div class="weui-cell__bd">
-                <input id="salesOffice" class="weui-input sale_text" type="text" placeholder="请填写售点">
+                <input style="text-align: right;" id="salesOffice" class="weui-input sale_text" type="text" placeholder="请填写售点">
             </div>
         </a>
         <a class="weui-cell weui-cell_access" data-type="3" href="javascript:;">
@@ -65,7 +65,7 @@
                 <p>渠道</p>
             </div>
             <div class="weui-cell__ft channel_text">
-                请选择
+                <input style="text-align: right;" class="weui-input" type="text" name="channel" id="channel" value="" placeholder="请选择">
             </div>
         </a>
         <a class="weui-cell weui-cell_access" data-type="4" href="javascript:;">
@@ -74,7 +74,7 @@
                 <p>品牌</p>
             </div>
             <div class="weui-cell__ft brand_text">
-                请选择
+                <input style="text-align: right;" class="weui-input" type="text" name="activity_item" id="activity_item" value="" placeholder="请选择">
             </div>
         </a>
         <a class="weui-cell weui-cell_access" data-type="2" href="javascript:;">
@@ -83,7 +83,7 @@
                 <p>手机号</p>
             </div>
             <div class="weui-cell__bd">
-                <input id="phone" class="weui-input sale_text" type="text" maxlength="11" pattern="/^[1-9]{1}[0-9]*$/" placeholder="请填写手机号">
+                <input style="text-align: right;" id="phone" class="weui-input sale_text" type="text" maxlength="11" pattern="/^[1-9]{1}[0-9]*$/" placeholder="请填写手机号" value="{{ $phone ?? '' }}" readonly>
             </div>
         </a>
         <a class="weui-cell weui-cell_access" data-type="5" href="javascript:;">

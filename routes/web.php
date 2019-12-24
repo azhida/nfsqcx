@@ -23,6 +23,9 @@ Route::group(['prefix' => 'index', 'namespace' => 'Index'], function()
     Route::get('login', 'LoginController@login');
     Route::post('login', 'LoginController@login');
     Route::get('getOffices', 'LoginController@getOffices');
+    Route::get('getDealers', 'LoginController@getDealers');
+    Route::get('getChannels', 'LoginController@getChannels');
+    Route::get('getActivityItems', 'LoginController@getActivityItems');
     // 发送短信验证码
     Route::post('sms/send', 'SmsController@send');
 

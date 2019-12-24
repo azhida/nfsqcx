@@ -5,10 +5,53 @@ var type = null;
 var imgs = [];
 var keys = 1;
 
+$.ajax({
+    'url': '/index/getDealers',
+    'method': 'get',
+    'dataType': 'json',
+    success: function (res) {
+        console.log(res);
+        if (res.code == '0000') {
+            $('#dealer').select("update", {title: "选择经销商", items: res.data })
+        } else {
+            alert('网络异常');
+            return false;
+        }
+    }
+});
 
+$.ajax({
+    'url': '/index/getChannels',
+    'method': 'get',
+    'dataType': 'json',
+    success: function (res) {
+        console.log(res);
+        if (res.code == '0000') {
+            $('#channel').select("update", {title: "选择渠道", items: res.data })
+        } else {
+            alert('网络异常');
+            return false;
+        }
+    }
+});
+
+$.ajax({
+    'url': '/index/getActivityItems',
+    'method': 'get',
+    'dataType': 'json',
+    success: function (res) {
+        console.log(res);
+        if (res.code == '0000') {
+            $('#activity_item').select("update", {title: "选择品牌", items: res.data })
+        } else {
+            alert('网络异常');
+            return false;
+        }
+    }
+});
 
 // 选择列表点击
-$('.select_list').on('click', '.weui-cell_access', function () {
+$('.select_list-').on('click', '.weui-cell_access', function () {
 
     $('#word_in').hide();
 
@@ -366,10 +409,10 @@ $('#upImg').change(function (e) {
 $('.clock-in').on('click','.btn',function () {
     var ajax_status = true;
     var office_id = $('#office_id').val();
-    var dealers_id = $('#dealers_id').val();
-    var sale_id = $('#sale_id').val();
+    var dealers_id = $('#dealer').data('values');
+    var sale_id = $('#channel').data('values');
     var product_id = $('#product_id').val();
-    var activity_item_id = $('#activity_item_id').val();
+    var activity_item_id = $('#activity_item').data('values');
     var salesOffice = $('#salesOffice').val();
     var phone = $('#phone').val();
     if($.trim( office_id).length == 0)

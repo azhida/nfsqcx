@@ -66,7 +66,31 @@ class LoginController extends Controller
     public function getOffices()
     {
         $offices = DB::table('cx_office')->select('name as title', 'id as value')->get();
-        return $this->showJson("0000","登陆成功", $offices);
+        return $this->showJson("0000","操作成功", $offices);
     }
+
+    // 经销商
+    public function getDealers()
+    {
+        $office_id = Session::get('office_id');
+        $offices = DB::table('cx_dealers')->select('dealers_name as title', 'id as value')->where('office_id', $office_id)->get();
+        return $this->showJson("0000","操作成功", $offices);
+    }
+
+    // 渠道
+    public function getChannels()
+    {
+        $_list = DB::table('cx_sales')->select('sales_name as title', 'id as value')->get();
+        return $this->showJson("0000","操作成功", $_list);
+    }
+
+    // 品牌（品项）
+    public function getActivityItems()
+    {
+        $_list = DB::table('cx_activity_item')->select('name as title', 'id as value')->get();
+        return $this->showJson("0000","操作成功", $_list);
+    }
+
+
 
 }
