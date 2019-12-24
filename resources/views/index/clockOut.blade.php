@@ -104,7 +104,7 @@
                         <p>经销商</p>
                     </div>
                     <div class="weui-cell__ft dealers_text">
-                        请选择
+                        <input style="text-align: right;" class="weui-input" type="text" name="dealer" id="dealer" value="" placeholder="请选择">
                     </div>
                 </a>
 
@@ -114,11 +114,11 @@
                         <p>售点</p>
                     </div>
                     <div class="weui-cell__bd">
-                        <input id="salesOffice" class="weui-input sale_text" name="salesOffice" type="text" placeholder="请填写售点">
+                        <input style="text-align: right;" id="salesOffice" class="weui-input sale_text" name="salesOffice" type="text" placeholder="请填写售点">
                     </div>
                 </a>
 
-                <a class="weui-cell weui-cell_access" data-type="6" href="javascript:;">
+                <a onclick="showProductList()" class="weui-cell weui-cell_access" data-type="6" href="javascript:;">
                     <div class="weui-cell__hd"><img src="{{ asset('index/imgs/sale_data.png') }}"></div>
                     <div class="weui-cell__bd">
                         <p>当日销量</p>
@@ -147,20 +147,20 @@
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号" id="phone" name="phone">
+                        <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号" id="phone" name="phone" value="{{ $phone ?? '' }}" readonly>
                     </div>
                 </div>
-                <div class="weui-cell weui-cell_vcode">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">验证码</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="number" name="code" placeholder="请输入验证码" id="code" pattern="\d*">
-                    </div>
-                    <div class="weui-cell__ft">
-                        <button class="weui-btn weui-btn_warn" id="get-code" type="button" onclick="getCode();">获取验证码</button>
-                    </div>
-                </div>
+                {{--<div class="weui-cell weui-cell_vcode">--}}
+                    {{--<div class="weui-cell__hd">--}}
+                        {{--<label class="weui-label">验证码</label>--}}
+                    {{--</div>--}}
+                    {{--<div class="weui-cell__bd">--}}
+                        {{--<input class="weui-input" type="number" name="code" placeholder="请输入验证码" id="code" pattern="\d*">--}}
+                    {{--</div>--}}
+                    {{--<div class="weui-cell__ft">--}}
+                        {{--<button class="weui-btn weui-btn_warn" id="get-code" type="button" onclick="getCode();">获取验证码</button>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
             </div>
 
 

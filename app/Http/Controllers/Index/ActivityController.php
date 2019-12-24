@@ -26,14 +26,10 @@ class ActivityController extends Controller
 
     public function clockOut()
     {
-        $user_id = Session::get('user_id');
-        $office_info = Db::table('cx_office as o')
-            ->join('cx_saler as s', 's.office_id', '=', 'o.id')
-            ->where('s.id', $user_id)
-            ->select('o.*')
-            ->first();
-
-        return view('index/clockOut', ['office_info' => $office_info]);
+        $office_id = Session::get('office_id');
+        $office_info = Office::query()->find($office_id);
+        $phone = Session::get('phone');
+        return view('index/clockOut', ['office_info' => $office_info, 'phone' => $phone]);
     }
 
     // 获取数据列表
@@ -260,7 +256,7 @@ class ActivityController extends Controller
             'salesOffice' => 'required',
             'phone' => 'required|numeric',
             'names' => 'required',
-            'code' => 'required',
+//            'code' => 'required',
             'imgs' => 'required',
         ], [
             'office_id.required' => '请选择办事处',
@@ -268,7 +264,7 @@ class ActivityController extends Controller
             'salesOffice.required' => '请填写售点',
             'phone.required' => '请填写手机号码',
             'names.required' => '请填写姓名',
-            'code.required' => '请填写验证码',
+//            'code.required' => '请填写验证码',
             'imgs.required' => '请拍照上传',
         ]);
 

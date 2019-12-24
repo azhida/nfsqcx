@@ -5,10 +5,34 @@ var type = null;
 var imgs = [];
 var keys = 1;
 
+$.ajax({
+    'url': '/index/getDealers',
+    'method': 'get',
+    'dataType': 'json',
+    success: function (res) {
+        console.log(res);
+        if (res.code == '0000') {
+            $('#dealer').select({
+                title: "选择经销商",
+                items: res.data,
+                onChange: function (d) {
+                    console.log(this, d, d.values);
+                    $('#dealers_id').val(d.values);
+                }
+            });
+
+        } else {
+            alert('网络异常');
+            return false;
+        }
+    }
+});
+
+
 
 
 // 选择列表点击
-$('.select_list').on('click', '.weui-cell_access', function () {
+$('.select_list-').on('click', '.weui-cell_access', function () {
 
     $('#word_in').hide();
 
