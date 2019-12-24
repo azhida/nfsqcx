@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Index;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -28,26 +29,27 @@ class LoginController extends Controller
 
             // 接收校验参数
             $validator = Validator::make($request->all(), [
-                'account' => 'required|max:255',
-                'password' => 'required',
-                'login_type' => 'required|numeric',
+                'office_id' => 'required',
+                'phone' => 'required',
+                'sms_code' => 'required',
             ], [
-                'account.required' => '账号必填',
-                'password.required' => '密码必填',
+                'office_id.required' => '请选择办事处',
+                'phone.required' => '手机号码必填',
+                'sms_code.required' => '验证码必填',
             ]);
 
             if ($validator->fails()) {
                 return $this->showJson('9999', $validator->errors()->first());
             }
 
-            // 比对 ，读库 验证密码
-            $saler_info = DB::table('cx_saler')->where('account', $request->account)->first();
-            if(!empty($saler_info) && md5($request->password . $saler_info->salt) == $saler_info->password) {
-                Session::put('user_id', $saler_info->id);
-                return $this->showJson("0000","登陆成功");
-            } else {
-                return $this->showJson('9999', '账号或密码错误');
-            }
+            // 手机号码 和 验证码
+            $sms_code = DB::table('cx_sms_code')->where('phone', $request->phone)->where('code', $request->sms_code)->first();
+            if (!$sms_code) return $this->showJson('9999', '验证码错误');
+            if ($sms_code->created_at < Carbon::now()->addMinutes(-$sms_code->cache_time)) return $this->showJson('9999', '验证码已失效，请重新获取');
+
+            Session::put('office_id', $request->office_id);
+            Session::put('phone', $request->phone);
+            return $this->showJson("0000","登陆成功");
 
         }
     }
@@ -55,9 +57,16 @@ class LoginController extends Controller
     // 退出登录
     public function logout()
     {
-        Session::forget('user_id');
+        Session::forget('office_id');
+        Session::forget('phone');
 
         return redirect('index/login', 302); // 302是临时重定向，301是永久重定向
+    }
+
+    public function getOffices()
+    {
+        $offices = DB::table('cx_office')->select('name as title', 'id as value')->get();
+        return $this->showJson("0000","登陆成功", $offices);
     }
 
 }

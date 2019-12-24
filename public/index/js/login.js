@@ -14,17 +14,18 @@ function changeLoginType(obj) {
 }
 
 // 获取短信验证码
-function genSmsCode() {
-    var val = $('#account').val();
-    if (val == '') {
+function genSmsCode(token) {
+    var phone = $('#phone').val();
+    if (phone == '') {
         $.alert('请输入手机号码');return;
     }
     var ajax_status = true;
     if(ajax_status) {
         $.showLoading();
         var data = {};
-        data['phone'] = val;
+        data['phone'] = phone;
         data['sms_type'] = 1;
+        data['_token'] = token;
         ajax_status = false;
         $.ajax({
             'url': '/index/sms/send',
@@ -61,7 +62,7 @@ function countTime(s) {
     }
     s--;
 
-    $('.is-code').text(s + 's后重新获取');
+    $('.is-code').text('重新获取' + s);
     setTimeout(function () {
         countTime(s)
     },1000)

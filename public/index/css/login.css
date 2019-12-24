@@ -54,7 +54,7 @@ body{
 	border: 0px solid red;
 }
 .weui-cell__bd {
-	padding-left: 30%;
+	padding-left: 20%;
 }
 .account {
 	background:url('/index/imgs/login/account.png') top -3px left no-repeat;
