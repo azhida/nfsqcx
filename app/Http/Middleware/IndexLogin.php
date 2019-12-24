@@ -16,7 +16,7 @@ class IndexLogin
      */
     public function handle($request, Closure $next)
     {
-        if (!Session::has('user_id')) {
+        if (!Session::has('office_id')) {
             return redirect('index/login');
         }
         return $next($request);
