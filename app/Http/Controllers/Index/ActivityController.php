@@ -51,7 +51,7 @@ class ActivityController extends Controller
                 break;
             case '1':
                 //经销商
-                $_list = DB::table('cx_dealers')->select('dealers_name as name', 'id')->where('office_id', $request->office_id ?? 0)->get();
+                $_list = DB::table('cx_dealers')->select('dealers_name as name', 'id')->where('is_show', true)->where('office_id', $request->office_id ?? 0)->get();
                 break;
             case '3':
                 //销售点//渠道
