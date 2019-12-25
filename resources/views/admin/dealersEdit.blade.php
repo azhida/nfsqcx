@@ -38,11 +38,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span class="x-red">*</span>所属办事处</label>
             <div class="layui-input-inline">
-                <select name="office_id" required="required" lay-verify="required">
-                    <option value="">请选择办事处</option>
-                    @foreach($list as $value)
-                        <option value="{{ $value->id }}" @if($value->id == $info->office_id) selected @endif>{{ $value->name ?? '' }}</option>
-                    @endforeach
+                <select required="required" lay-verify="required" disabled>
+                    <option value="{{ $info->office->id }}">{{ $info->office->name }}</option>
                 </select>
             </div>
         </div>

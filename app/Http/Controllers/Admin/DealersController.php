@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Dealer;
+use App\Models\Office;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -40,12 +42,12 @@ class DealersController extends Controller
     public function dealersAdd(Request $request)
     {
         if ($request->isMethod('get')) {
-            $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
+            $office_list = Office::query()->orderBy('id', 'DESC')->get();
             return view('admin/dealersAdd', ['list' => $office_list]);
         } else {
 
             $validator = Validator::make($request->all(), [
-                'dealers_name' => 'required|unique:cx_dealers,dealers_name',
+                'dealers_name' => 'required',
                 'office_id' => 'required|numeric|min:1',
             ], [
                 'dealers_name.required' => '经销商必填',
@@ -58,6 +60,11 @@ class DealersController extends Controller
                 return $this->showJson('9999', $validator->errors()->first());
             }
 
+            // 判断 ，只要 该办事处下 不存在 该经销商，即可添加，不同的办事处，可以存在相同的经销商
+            // （注：考虑 办事处 和 经销商 可能存在 调整的情况，但是 历史打卡记录需要保存）
+            $info = Dealer::query()->where('office_id', $request->office_id)->where('dealers_name', $request->dealers_name)->first();
+            if ($info) return $this->showJson('9999', '办事处已存在该经销商');
+
             $insert_data = [
                 'dealers_name' => $request->dealers_name,
                 'office_id' => $request->office_id,
@@ -65,24 +72,17 @@ class DealersController extends Controller
                 'update_time' => time(),
             ];
 
-            $id = DB::table('cx_dealers')->insertGetId($insert_data);
-            if ($id) {
-                return $this->showJson('0000', '操作成功');
-            } else {
-                return $this->showJson('9999', '操作失败');
-            }
+            Dealer::create($insert_data);
 
+            return $this->showJson('0000', '操作成功');
         }
     }
 
     public function dealersEdit(Request $request)
     {
+        $info = Dealer::query()->with(['office'])->find($request->id);
         if ($request->isMethod('get')) {
-
-            $info = DB::table('cx_dealers')->where('id', $request->id)->first();
-            $office_list = DB::table('cx_office')->orderBy('id', 'DESC')->get();
-
-            return view('admin/dealersEdit', ['list' => $office_list, 'info' => $info]);
+            return view('admin/dealersEdit', ['info' => $info]);
 
         } else {
 
@@ -106,5 +106,20 @@ class DealersController extends Controller
     {
         DB::table('cx_dealers')->whereIn('id', $request->ids)->delete();
         return $this->showJson('0000', '操作成功');
+    }
+
+    public function isShow(Request $request)
+    {
+        $info = Dealer::query()->find($request->id);
+        if (!$info) return $this->showJson('9999', '经销商不存在');
+
+        if ($info->is_show) {
+            $info->update(['is_show' => false]);
+        } else {
+            $info->update(['is_show' => true]);
+        }
+
+        return $this->showJson('0000', '操作成功');
+
     }
 }

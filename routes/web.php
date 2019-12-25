@@ -112,6 +112,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
 
         // 经销商管理
         Route::get('dealersList', 'DealersController@dealersList');
+        Route::post('is_show_dealer', 'DealersController@isShow')->name('dealers.is_show_dealer');
         Route::get('dealersAdd', 'DealersController@dealersAdd');
         Route::post('dealersAdd', 'DealersController@dealersAdd');
         Route::get('dealersEdit/{id}', 'DealersController@dealersEdit');

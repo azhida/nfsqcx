@@ -35,7 +35,7 @@
     <form class="layui-form layui-col-md12 x-so" id="search_form">
       <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{ $search_params['start'] ?? '' }}">
       <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{ $search_params['end'] ?? '' }}">
-      <input type="text" name="dealers_name"  placeholder="请输入登录账户" autocomplete="off" class="layui-input" value="{{ $search_params['dealers_name'] ?? '' }}">
+      <input type="text" name="dealers_name"  placeholder="请输入经销商名称" autocomplete="off" class="layui-input" value="{{ $search_params['dealers_name'] ?? '' }}">
       <div class="layui-input-inline">
         <select name="office_id">
           <option value="">请选择办事处</option>
@@ -61,6 +61,7 @@
       <th>ID</th>
       <th>经销商名称</th>
       <th>所属办事处</th>
+      <th>是否展示</th>
       <th>添加时间</th>
       <th>修改时间</th>
       <th>操作</th>
@@ -74,6 +75,13 @@
         <td>{{ $value->id }}</td>
         <td>{{ $value->dealers_name }}</td>
         <td>{{ $value->office_name ?? '' }}</td>
+        <td>
+          <a onclick="isShow(this, {{ $value->id }})">
+            <form class="layui-form" action="">
+              <input type="checkbox" name="switch" lay-skin="switch" @if($value->is_show) checked @endif>
+            </form>
+          </a>
+        </td>
         <td>{{ $value->add_time }}</td>
         <td>{{ $value->update_time }}</td>
         <td class="td-manage">
@@ -106,6 +114,21 @@
             elem: '#end' //指定元素
         });
     });
+
+    function isShow(obj, id) {
+
+        $.ajax({
+            url: '{{ route('dealers.is_show_dealer') }}',
+            type: 'post',
+            data: {id: id, _token: '{{ csrf_token() }}'},
+            success: function (res) {
+                console.log(res);
+                window.location.reload();
+                return false;
+            }
+        });
+
+    }
 
     /*用户-停用*/
     function member_stop(obj,id){
