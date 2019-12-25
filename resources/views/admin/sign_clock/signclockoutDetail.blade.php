@@ -24,7 +24,7 @@
 <h3 style="margin-left: 10px;">打卡详情：</h3>
 <table class="layui-table layui-col-xs6" lay-even="" lay-skin="nob" style="margin-left: 50px;">
   <tbody>
-  <tr><td>用户账号：</td><td>{{ $info->account ?? '' }}</td></tr>
+  {{--<tr><td>用户账号：</td><td>{{ $info->account ?? '' }}</td></tr>--}}
   <tr><td>上报手机号：</td><td>{{ $info->phone ?? '' }}</td></tr>
   <tr><td>销售姓名：</td><td>{{ $info->names ?? '' }}</td></tr>
   <tr>

@@ -13,8 +13,8 @@ class SignclockController extends Controller
     public function signclockinList(Request $request)
     {
         $query = DB::table('cx_sign_clock_in as sci')
-            ->select('sci.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sale_channels.sales_name')
-            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
+            ->select('sci.*', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sale_channels.sales_name')
+//            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
             ->join('cx_dealers', 'cx_dealers.id', '=', 'sci.dealers_id')
             ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
@@ -59,8 +59,8 @@ class SignclockController extends Controller
     {
         // 上班数据
         $sign_clock_in_detail = DB::table('cx_sign_clock_in as sci')
-            ->select('sci.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
-            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
+            ->select('sci.*', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
+//            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
             ->join('cx_dealers', 'cx_dealers.id', '=', 'sci.dealers_id')
             ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
@@ -114,8 +114,8 @@ class SignclockController extends Controller
     public function signclockoutList(Request $request)
     {
         $query = DB::table('cx_sign_clock_out')
-            ->select('cx_sign_clock_out.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name')
-            ->join('cx_saler', 'cx_saler.id', '=', 'cx_sign_clock_out.user_id')
+            ->select('cx_sign_clock_out.*', 'cx_office.name as office_name', 'cx_dealers.dealers_name')
+//            ->join('cx_saler', 'cx_saler.id', '=', 'cx_sign_clock_out.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'cx_sign_clock_out.office_id')
             ->join('cx_dealers', 'cx_dealers.id', '=', 'cx_sign_clock_out.dealers_id')
             ->where('type', 2);
@@ -154,8 +154,8 @@ class SignclockController extends Controller
     public function signclockoutDetail(Request $request, $sign_clock_out_id)
     {
         $sign_clock_detail = DB::table('cx_sign as sco')
-            ->join('cx_saler as s', 's.id', '=', 'sco.user_id')
-            ->select('sco.*', 's.account')
+//            ->join('cx_saler as s', 's.id', '=', 'sco.user_id')
+            ->select('sco.*')
             ->where('sco.id', $sign_clock_out_id)
             ->first();
 
@@ -197,8 +197,8 @@ class SignclockController extends Controller
         $dates = array_column($list->items(), 'date');
 
         $sign_clock_in_query = DB::table('cx_sign_clock_in as sci')
-            ->select('sci.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
-            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
+            ->select('sci.*', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
+//            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
             ->join('cx_dealers', 'cx_dealers.id', '=', 'sci.dealers_id')
             ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
@@ -259,8 +259,8 @@ class SignclockController extends Controller
     {
         // 上班数据
         $sign_clock_in_list = DB::table('cx_sign_clock_in as sci')
-            ->select('sci.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
-            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
+            ->select('sci.*', 'cx_office.name as office_name', 'cx_dealers.dealers_name', 'ai.name as activity_item_name', 'cx_sales.sales_name')
+//            ->join('cx_saler', 'cx_saler.id', '=', 'sci.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sci.office_id')
             ->join('cx_dealers', 'cx_dealers.id', '=', 'sci.dealers_id')
             ->join('cx_activity_item as ai', 'ai.id', '=', 'sci.activity_item_id')
@@ -272,8 +272,8 @@ class SignclockController extends Controller
 
         // 下班数据
         $sign_clock_out_list = DB::table('cx_sign_clock_out as sco')
-            ->select('sco.*', 'cx_saler.account as user_name', 'cx_office.name as office_name', 'cx_dealers.dealers_name')
-            ->join('cx_saler', 'cx_saler.id', '=', 'sco.user_id')
+            ->select('sco.*', 'cx_office.name as office_name', 'cx_dealers.dealers_name')
+//            ->join('cx_saler', 'cx_saler.id', '=', 'sco.user_id')
             ->join('cx_office', 'cx_office.id', '=', 'sco.office_id')
             ->join('cx_dealers', 'cx_dealers.id', '=', 'sco.dealers_id')
             ->where('sco.phone', $phone)

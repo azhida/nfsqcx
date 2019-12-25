@@ -52,7 +52,7 @@
     <thead>
     <tr>
       <th>ID</th>
-      <th>办事处账号</th>
+      {{--<th>办事处账号</th>--}}
       <th>办事处名称</th>
       <th>经销商名称</th>
       <th>售点名称</th>
@@ -65,7 +65,7 @@
     @foreach($list as $value)
       <tr>
         <td>{{ $value->id }}</td>
-        <td>{{ $value->user_name ?? '' }}</td>
+        {{--<td>{{ $value->user_name ?? '' }}</td>--}}
         <td>{{ $value->office_name ?? '' }}</td>
         <td>{{ $value->dealers_name ?? '' }}</td>
         <td>{{ $value->points ?? '' }}</td>

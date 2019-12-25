@@ -24,7 +24,7 @@
 <h3 style="margin-left: 10px;">打卡详情：</h3>
 <table class="layui-table layui-col-xs6" lay-even="" lay-skin="nob" style="margin-left: 50px;">
   <tbody>
-  <tr><td>办事处账号：</td><td>{{ $info->user_name ?? '' }}</td></tr>
+  {{--<tr><td>办事处账号：</td><td>{{ $info->user_name ?? '' }}</td></tr>--}}
   <tr><td>办事处名称：</td><td>{{ $info->office_name ?? '' }}</td></tr>
   <tr><td>经销商名称：</td><td>{{ $info->dealers_name ?? '' }}</td></tr>
   <tr><td>品牌名称：</td><td>{{ $info->activity_item_name ?? '' }}</td></tr>
@@ -41,7 +41,7 @@
           {{ csrf_field() }}
           <input type="hidden" name="clock_type" value="clock_in">
           <input class="layui-input" placeholder="打卡时间" name="clock_time" id="clock_time" value="" lay-verify="clock_time">
-          <button type="button" class="layui-btn" lay-submit="" lay-filter="edit" onclick="signclockEdit('{{ route('signclock.update', $info->id) }}')">提交</button>
+          <button type="button" class="layui-btn" lay-submit="" lay-filter="edit" onclick="signclockEdit('{{ route('signclock.update', $info->id ?? 0) }}')">提交</button>
         </form>
       @endif
 
