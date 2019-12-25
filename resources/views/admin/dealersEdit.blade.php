@@ -49,7 +49,7 @@
 
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label"></label>
-            <button type="button" class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+            <button type="button" class="layui-btn" lay-filter="add" lay-submit="">保存</button>
         </div>
     </form>
 </div>
@@ -75,9 +75,10 @@
                             var index = parent.layer.getFrameIndex(window.name);
                             //关闭当前frame
                             parent.layer.close(index);
+                            parent.location.reload();
                         });
                     } else {
-                        layer.alert("增加失败", {icon: 2});
+                        layer.alert(res.mes, {icon: 2});
                     }
                 }
             });
