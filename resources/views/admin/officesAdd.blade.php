@@ -61,9 +61,10 @@
                             var index = parent.layer.getFrameIndex(window.name);
                             //关闭当前frame
                             parent.layer.close(index);
+                            parent.location.reload();
                         });
                     } else {
-                        layer.alert("增加失败", {icon: 2});
+                        layer.alert(res.mes, {icon: 2});
                     }
                 }
             });
