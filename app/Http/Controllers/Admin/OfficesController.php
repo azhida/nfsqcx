@@ -46,18 +46,10 @@ class OfficesController extends Controller
                 return $this->showJson('9999', $validator->errors()->first());
             }
 
-            $insert_data = [
+            Office::create([
                 'name' => $request->name,
-                'create_time' => time(),
-                'update_time' => time(),
-            ];
-
-            $id = DB::table('cx_office')->insertGetId($insert_data);
-            if ($id) {
-                return $this->showJson('0000', '操作成功');
-            } else {
-                return $this->showJson('9999', '操作失败');
-            }
+            ]);
+            return $this->showJson('0000', '操作成功');
 
         }
 
