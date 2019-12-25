@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Office;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -64,25 +65,30 @@ class OfficesController extends Controller
 
     public function officesEdit(Request $request)
     {
+        $info = Office::query()->find($request->id);
+
         if ($request->isMethod('get')) {
 
-            $info = DB::table('cx_office')->where('id', $request->id)->first();
-
-            return view('admin/sellersEdit', ['info' => $info]);
+            return view('admin/officesEdit', ['info' => $info]);
 
         } else {
 
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|unique:cx_office,name,' . $request->id,
+            ], [
+                'name.required' => '办事处必填',
+                'name.unique' => '办事处已存在',
+            ]);
+            if ($validator->fails()) {
+                return $this->showJson('9999', $validator->errors()->first());
+            }
+
             $update_data = $request->all();
             unset($update_data['_token']);
-            if ($request->account) {
-                // 先查 修改的 账号 是否已经存在
-                $count = DB::table('cx_office')->where('id', '<>', $request->id)->where('name', $request->name)->count();
-                if ($count) return $this->showJson('9999', '办事处已经在');
-            }
 
             $update_data['update_time'] = time();
 
-            DB::table('cx_office')->where('id', $request->id)->update($update_data);
+            $info->update($update_data);
 
             return $this->showJson('0000', '操作成功');
 
